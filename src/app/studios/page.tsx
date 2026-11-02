@@ -4,13 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import {
-  Camera,
-  MapPin,
-  Search,
-  SlidersHorizontal,
-  Sparkles,
-  Star,
-  Loader2,
+  Camera,  MapPin,  Search,  SlidersHorizontal,  Sparkles,  Star, Loader2,
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
