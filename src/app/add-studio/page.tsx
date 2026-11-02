@@ -3,6 +3,8 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { toast } from "react-toastify"; // <--- Imported from react-toastify
+import "react-toastify/dist/ReactToastify.css";
 
 import {
   ArrowLeft,
@@ -45,10 +47,14 @@ export default function AddStudioPage() {
   const router = useRouter();
 
   const [selectedAmenities, setSelectedAmenities] = useState<string[]>([]);
-
   const [imageUrl, setImageUrl] = useState("");
-
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // Read-only user details as required by the assignment
+  const user = {
+    name: "Nujhat Tasnim",
+    email: "nujhat@studiospace.com",
+  };
 
   function toggleAmenity(amenity: string) {
     setSelectedAmenities((current) =>
@@ -73,20 +79,18 @@ export default function AddStudioPage() {
       imageUrl: String(formData.get("imageUrl") ?? "").trim(),
       amenities: selectedAmenities,
       description: String(formData.get("description") ?? "").trim(),
+      ownerName: user.name,
+      ownerEmail: user.email,
     };
 
-    if (
-      !studio.title ||
-      !studio.category ||
-      !studio.location ||
-      !studio.description
+    if ( !studio.title || !studio.category ||  !studio.location ||  !studio.description
     ) {
-      alert("Please complete all required fields.");
+      toast.error("Please complete all required fields.");
       return;
     }
 
     if (!Number.isFinite(studio.hourlyRate) || studio.hourlyRate <= 0) {
-      alert("Please enter a valid hourly rate.");
+      toast.error("Please enter a valid hourly rate.");
       return;
     }
 
@@ -94,20 +98,18 @@ export default function AddStudioPage() {
       !Number.isFinite(studio.securityDeposit) ||
       studio.securityDeposit < 0
     ) {
-      alert("Please enter a valid security deposit.");
+      toast.error("Please enter a valid security deposit.");
       return;
     }
 
     if (!Number.isInteger(studio.capacity) || studio.capacity < 1) {
-      alert("Capacity must be at least one person.");
+      toast.error("Capacity must be at least one person.");
       return;
     }
 
     setIsSubmitting(true);
 
     try {
-        console.log("Submitting studio object:", studio);
-
       const res = await fetch("http://localhost:8000/add-studio", {
         method: "POST",
         headers: {
@@ -120,14 +122,14 @@ export default function AddStudioPage() {
         throw new Error("Failed to create studio");
       }
 
-          const data = await res.json();
+      const data = await res.json();
       console.log("Server response:", data);
 
-      alert("Studio published successfully!");
-  
+      toast.success("Studio published successfully!");
+      router.push("/my-listings");
     } catch (error) {
       console.error("Unable to create studio:", error);
-      alert("Something went wrong. Please try again.");
+      toast.error("Something went wrong. Please try again.");
     } finally {
       setIsSubmitting(false);
     }
@@ -138,45 +140,26 @@ export default function AddStudioPage() {
       {/* Navbar */}
       <header className="sticky top-0 z-40 border-b border-[#E5D3C0] bg-[#FBF6EE]/95 backdrop-blur-md">
         <nav className="mx-auto flex max-w-7xl items-center justify-between px-5 py-4 lg:px-8">
-          <Link
-            href="/"
-            className="flex items-center gap-2 text-[#4A291B]" >
+          <Link href="/" className="flex items-center gap-2 text-[#4A291B]">
             <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#F3E7D8]">
               <Camera size={25} />
             </div>
-
-            <span className="brand-font text-2xl font-bold">
-              StudioSpace
-            </span>
+            <span className="brand-font text-2xl font-bold">StudioSpace</span>
           </Link>
-
           <div className="hidden items-center gap-7 text-sm font-semibold text-[#78675B] md:flex">
-            <Link
-              href="/"
-              className="transition hover:text-[#4A291B]" >
+            <Link href="/" className="transition hover:text-[#4A291B]">
               Home
             </Link>
-
-            <Link
-              href="/studios"
-              className="transition hover:text-[#4A291B]" >
+            <Link href="/studios" className="transition hover:text-[#4A291B]">
               Explore Studios
             </Link>
-
             <Link
               href="/my-listings"
-              className="text-[#4A291B] underline decoration-2 underline-offset-8" >
+              className="text-[#4A291B] underline decoration-2 underline-offset-8"
+            >
               My Listings
             </Link>
           </div>
-
-          <Link href="/my-listings">
-            <Button
-              variant="outline"
-              className="rounded-xl border-[#E5D3C0] text-[#4A291B] hover:bg-[#F3E7D8]">
-              My Listings
-            </Button>
-          </Link>
         </nav>
       </header>
 
@@ -185,7 +168,8 @@ export default function AddStudioPage() {
         <div className="mx-auto max-w-5xl">
           <Link
             href="/my-listings"
-            className="mb-5 inline-flex items-center gap-2 text-sm font-bold text-[#78675B] hover:text-[#4A291B]" >
+            className="mb-5 inline-flex items-center gap-2 text-sm font-bold text-[#78675B] hover:text-[#4A291B]"
+          >
             <ArrowLeft size={17} />
             Back to My Listings
           </Link>
@@ -196,17 +180,14 @@ export default function AddStudioPage() {
                 <Sparkles size={16} />
                 Share your creative space
               </div>
-
               <h1 className="brand-font text-4xl font-bold tracking-tight text-[#4A291B] sm:text-5xl">
                 List Your Studio
               </h1>
-
               <p className="mt-3 max-w-2xl leading-7 text-[#78675B]">
-                Turn your creative space into an opportunity.
-                Tell creators what makes your studio special.
+                Turn your creative space into an opportunity. Tell creators what
+                makes your studio special.
               </p>
             </div>
-
             <div className="hidden h-16 w-16 shrink-0 items-center justify-center rounded-2xl bg-[#F3E7D8] text-[#4A291B] sm:flex">
               <Music size={34} />
             </div>
@@ -219,19 +200,47 @@ export default function AddStudioPage() {
         <div className="mx-auto max-w-5xl">
           <form
             onSubmit={handleSubmit}
-            className="overflow-hidden rounded-3xl border border-[#E5D3C0] bg-[#FFFCF7] shadow-sm" >
+            className="overflow-hidden rounded-3xl border border-[#E5D3C0] bg-[#FFFCF7] shadow-sm"
+          >
+            {/* Host Information (Read-only as required) */}
+            <div className="border-b border-[#E5D3C0] bg-[#F3E7D8]/40 p-5 sm:p-8">
+              <h2 className="brand-font mb-4 text-xl font-bold text-[#4A291B]">
+                Host Information (Read-Only)
+              </h2>
+              <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
+                <div className="space-y-2">
+                  <label className="text-sm font-bold text-[#4A291B]">
+                    Host Name
+                  </label>
+                  <Input
+                    value={user.name}
+                    readOnly
+                    className="h-12 cursor-not-allowed rounded-xl border-[#E5D3C0] bg-[#EEDCC7] text-[#655348]"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-sm font-bold text-[#4A291B]">
+                    Host Email
+                  </label>
+                  <Input
+                    value={user.email}
+                    readOnly
+                    className="h-12 cursor-not-allowed rounded-xl border-[#E5D3C0] bg-[#EEDCC7] text-[#655348]"
+                  />
+                </div>
+              </div>
+            </div>
+
             {/* Studio details */}
             <div className="border-b border-[#E5D3C0] p-5 sm:p-8">
               <div className="mb-7 flex items-center gap-3">
                 <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-[#F3E7D8] text-[#4A291B]">
                   <Camera size={23} />
                 </div>
-
                 <div>
                   <h2 className="brand-font text-2xl font-bold text-[#4A291B]">
                     Studio Details
                   </h2>
-
                   <p className="mt-1 text-sm text-[#78675B]">
                     Give your studio a name and choose its category.
                   </p>
@@ -239,129 +248,110 @@ export default function AddStudioPage() {
               </div>
 
               <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
-                {/* Title */}
                 <div className="space-y-2">
-                  <label
-                    htmlFor="title"
-                    className="text-sm font-bold text-[#4A291B]" >
+                  <label htmlFor="title" className="text-sm font-bold text-[#4A291B]">
                     Studio title *
                   </label>
-
                   <Input
                     id="title"
                     name="title"
                     placeholder="e.g. The Loft Studio"
                     required
                     maxLength={100}
-                    className="h-12 rounded-xl border-[#E5D3C0] bg-[#FBF6EE] focus-visible:ring-[#4A291B]" />
+                    className="h-12 rounded-xl border-[#E5D3C0] bg-[#FBF6EE] focus-visible:ring-[#4A291B]"
+                  />
                 </div>
 
-                {/* Category */}
                 <div className="space-y-2">
-                  <label
-                    htmlFor="category"
-                    className="text-sm font-bold text-[#4A291B]" >
+                  <label htmlFor="category" className="text-sm font-bold text-[#4A291B]">
                     Category *
                   </label>
-
                   <select
                     id="category"
                     name="category"
                     required
                     defaultValue=""
-                    className="h-12 w-full rounded-xl border border-[#E5D3C0] bg-[#FBF6EE] px-3 text-sm text-[#4A291B] outline-none focus:ring-2 focus:ring-[#4A291B]" >
+                    className="h-12 w-full rounded-xl border border-[#E5D3C0] bg-[#FBF6EE] px-3 text-sm text-[#4A291B] outline-none focus:ring-2 focus:ring-[#4A291B]"
+                  >
                     <option value="" disabled>
                       Select a category
                     </option>
-
-                    {categories.map((category) => (
-                      <option key={category} value={category}>
-                        {category}
+                    {categories.map((cat) => (
+                      <option key={cat} value={cat}>
+                        {cat}
                       </option>
                     ))}
                   </select>
                 </div>
 
-                {/* Hourly rate */}
                 <div className="space-y-2">
-                  <label
-                    htmlFor="hourlyRate"
-                    className="text-sm font-bold text-[#4A291B]">
-                        Hourly rate ($) *
+                  <label htmlFor="hourlyRate" className="text-sm font-bold text-[#4A291B]">
+                    Hourly rate ($) *
                   </label>
-
                   <Input
                     id="hourlyRate"
                     name="hourlyRate"
                     type="number"
+                    min="0.01"
+                    step="0.01"
                     placeholder="e.g. 50"
                     required
-                    className="h-12 rounded-xl border-[#E5D3C0] bg-[#FBF6EE] focus-visible:ring-[#4A291B]" />
+                    className="h-12 rounded-xl border-[#E5D3C0] bg-[#FBF6EE] focus-visible:ring-[#4A291B]"
+                  />
                 </div>
 
-                {/* Deposit */}
                 <div className="space-y-2">
-                  <label
-                    htmlFor="securityDeposit"
-                    className="text-sm font-bold text-[#4A291B]">
+                  <label htmlFor="securityDeposit" className="text-sm font-bold text-[#4A291B]">
                     Security deposit ($) *
                   </label>
-
                   <Input
                     id="securityDeposit"
                     name="securityDeposit"
                     type="number"
+                    min="0"
+                    step="0.01"
                     placeholder="e.g. 100"
                     required
-                    className="h-12 rounded-xl border-[#E5D3C0] bg-[#FBF6EE] focus-visible:ring-[#4A291B]"/>
+                    className="h-12 rounded-xl border-[#E5D3C0] bg-[#FBF6EE] focus-visible:ring-[#4A291B]"
+                  />
                 </div>
 
-                {/* Capacity */}
                 <div className="space-y-2">
-                  <label
-                    htmlFor="capacity"
-                    className="text-sm font-bold text-[#4A291B]">
+                  <label htmlFor="capacity" className="text-sm font-bold text-[#4A291B]">
                     Maximum capacity *
                   </label>
-
                   <select
                     id="capacity"
                     name="capacity"
                     defaultValue=""
                     required
-                    className="h-12 w-full rounded-xl border border-[#E5D3C0] bg-[#FBF6EE] px-3 text-sm text-[#4A291B] outline-none focus:ring-2 focus:ring-[#4A291B]" >
+                    className="h-12 w-full rounded-xl border border-[#E5D3C0] bg-[#FBF6EE] px-3 text-sm text-[#4A291B] outline-none focus:ring-2 focus:ring-[#4A291B]"
+                  >
                     <option value="" disabled>
                       Select capacity
                     </option>
-
-                    {[1, 2, 4, 6, 8, 10, 15, 20, 30, 50].map((number) => (
-                      <option key={number} value={number}>
-                        {number} {number === 1 ? "person" : "people"}
+                    {[1, 2, 4, 6, 8, 10, 15, 20, 30, 50].map((num) => (
+                      <option key={num} value={num}>
+                        {num} {num === 1 ? "person" : "people"}
                       </option>
                     ))}
                   </select>
                 </div>
 
-                {/* Location */}
                 <div className="space-y-2">
-                  <label
-                    htmlFor="location"
-                    className="text-sm font-bold text-[#4A291B]" >
+                  <label htmlFor="location" className="text-sm font-bold text-[#4A291B]">
                     Location *
                   </label>
-
                   <div className="relative">
-                    <MapPin
-                      size={18}
-                      className="absolute left-3 top-1/2 -translate-y-1/2 text-[#8A796B]"/>
-
+                    <MapPin size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#8A796B]" />
                     <Input
                       id="location"
                       name="location"
                       placeholder="e.g. Gulshan, Dhaka"
                       required
                       maxLength={200}
-                      className="h-12 rounded-xl border-[#E5D3C0] bg-[#FBF6EE] pl-10 focus-visible:ring-[#4A291B]"  />
+                      className="h-12 rounded-xl border-[#E5D3C0] bg-[#FBF6EE] pl-10 focus-visible:ring-[#4A291B]"
+                    />
                   </div>
                 </div>
               </div>
@@ -373,12 +363,10 @@ export default function AddStudioPage() {
                 <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-[#F3E7D8] text-[#4A291B]">
                   <ImagePlus size={23} />
                 </div>
-
                 <div>
                   <h2 className="brand-font text-2xl font-bold text-[#4A291B]">
                     Studio Photos
                   </h2>
-
                   <p className="mt-1 text-sm text-[#78675B]">
                     Add an image URL to showcase your space.
                   </p>
@@ -386,12 +374,9 @@ export default function AddStudioPage() {
               </div>
 
               <div className="space-y-2">
-                <label
-                  htmlFor="imageUrl"
-                  className="text-sm font-bold text-[#4A291B]"  >
+                <label htmlFor="imageUrl" className="text-sm font-bold text-[#4A291B]">
                   Main image URL *
                 </label>
-
                 <Input
                   id="imageUrl"
                   name="imageUrl"
@@ -400,7 +385,8 @@ export default function AddStudioPage() {
                   value={imageUrl}
                   onChange={(e) => setImageUrl(e.target.value)}
                   required
-                  className="h-12 rounded-xl border-[#E5D3C0] bg-[#FBF6EE] focus-visible:ring-[#4A291B]"  />
+                  className="h-12 rounded-xl border-[#E5D3C0] bg-[#FBF6EE] focus-visible:ring-[#4A291B]"
+                />
               </div>
 
               {imageUrl && (
@@ -408,14 +394,9 @@ export default function AddStudioPage() {
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src={imageUrl}
-                    alt="Studio image preview"
+                    alt="Studio preview"
                     className="h-64 w-full object-cover"
-                    onError={(e) => {
-                      e.currentTarget.style.visibility = "hidden";
-                    }}
-                    onLoad={(e) => {
-                      e.currentTarget.style.visibility = "visible";
-                    }} />
+                  />
                 </div>
               )}
             </div>
@@ -426,7 +407,6 @@ export default function AddStudioPage() {
                 <h2 className="brand-font text-2xl font-bold text-[#4A291B]">
                   Amenities & Equipment
                 </h2>
-
                 <p className="mt-1 text-sm text-[#78675B]">
                   Select everything available in your studio.
                 </p>
@@ -435,7 +415,6 @@ export default function AddStudioPage() {
               <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
                 {amenities.map((amenity) => {
                   const checked = selectedAmenities.includes(amenity);
-
                   return (
                     <label
                       key={amenity}
@@ -443,13 +422,14 @@ export default function AddStudioPage() {
                         checked
                           ? "border-[#4A291B] bg-[#F3E7D8] text-[#4A291B]"
                           : "border-[#E5D3C0] bg-[#FBF6EE] text-[#655348] hover:bg-[#F3E7D8]/60"
-                      }`}  >
+                      }`}
+                    >
                       <input
                         type="checkbox"
                         checked={checked}
                         onChange={() => toggleAmenity(amenity)}
-                        className="h-4 w-4 shrink-0 accent-[#4A291B]" />
-
+                        className="h-4 w-4 shrink-0 accent-[#4A291B]"
+                      />
                       <span className="font-semibold">{amenity}</span>
                     </label>
                   );
@@ -463,32 +443,24 @@ export default function AddStudioPage() {
                 <h2 className="brand-font text-2xl font-bold text-[#4A291B]">
                   Tell Your Story
                 </h2>
-
                 <p className="mt-1 text-sm text-[#78675B]">
                   Help creators imagine what they can make here.
                 </p>
               </div>
 
               <div className="space-y-2">
-                <label
-                  htmlFor="description"
-                  className="text-sm font-bold text-[#4A291B]" >
+                <label htmlFor="description" className="text-sm font-bold text-[#4A291B]">
                   Studio description *
                 </label>
-
                 <Textarea
                   id="description"
                   name="description"
-                  placeholder="Describe your space, equipment, atmosphere, accessibility, and what makes it special..."
+                  placeholder="Describe your space, equipment, atmosphere..."
                   required
                   minLength={20}
                   maxLength={3000}
-                  className="min-h-40 resize-y rounded-xl border-[#E5D3C0] bg-[#FBF6EE] leading-7 focus-visible:ring-[#4A291B]" />
-
-                <p className="text-xs text-[#8A796B]">
-                  Include useful details about your studio and the equipment
-                  creators can use.
-                </p>
+                  className="min-h-40 resize-y rounded-xl border-[#E5D3C0] bg-[#FBF6EE] leading-7 focus-visible:ring-[#4A291B]"
+                />
               </div>
 
               {/* Actions */}
@@ -497,14 +469,15 @@ export default function AddStudioPage() {
                   type="button"
                   variant="outline"
                   onClick={() => router.push("/my-listings")}
-                  className="h-12 rounded-xl border-[#4A291B] px-6 font-bold text-[#4A291B] hover:bg-[#F3E7D8]" >
+                  className="h-12 rounded-xl border-[#4A291B] px-6 font-bold text-[#4A291B] hover:bg-[#F3E7D8]"
+                >
                   Cancel
                 </Button>
-
                 <Button
                   type="submit"
                   disabled={isSubmitting}
-                  className="h-12 rounded-xl bg-[#4A291B] px-7 font-bold text-white hover:bg-[#2C221E]" >
+                  className="h-12 rounded-xl bg-[#4A291B] px-7 font-bold text-white hover:bg-[#2C221E]"
+                >
                   <Plus size={18} className="mr-2" />
                   {isSubmitting ? "Publishing..." : "Add Studio"}
                 </Button>
