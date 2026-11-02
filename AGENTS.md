@@ -7,3 +7,25 @@ This version has breaking changes — APIs, conventions, and file structure may 
 This block is written and re-added by `next dev` — verify at `node_modules/next/dist/server/lib/generate-agent-files.js`. Removing it from a diff only re-creates the uncommitted change; committing it with your work keeps the tree clean.
 
 <!-- END:nextjs-agent-rules -->
+
+# StudioSpace
+
+Single-package Next.js 16 App Router app (React 19, TypeScript `strict`). No tests are configured — verification is `npm run lint`, `npx tsc --noEmit` (no typecheck script exists), and `npm run build`.
+
+## Toolchain quirks that change how you write code
+
+- **React Compiler is on** (`reactCompiler: true` in `next.config.ts`). Do not hand-memoize with `useMemo`/`useCallback`/`React.memo` for performance; let the compiler handle it. It compiles reusable functions and JSX, so non-idiomatic or mutating patterns can fail the build — follow rules-of-hooks strictly.
+- **Turbopack** is the dev bundler. Tailwind CSS is wired through the `turbopack.rules` loader in `next.config.ts`, not webpack/PostCSS config.
+- **Tailwind v4 is CSS-first**: there is no `tailwind.config.js`. Theme tokens, plugins (`shadcn/tailwind.css`, `tw-animate-css`), and the dark-mode variant (`@custom-variant dark` toggled by a `.dark` class) are all defined in `src/app/globals.css`. Change styling there, not in a config file.
+
+## shadcn/ui — Base UI, not Radix
+
+- `components.json` uses style `base-nova`: components in `src/components/ui` are generated on **`@base-ui/react`** primitives (`@base-ui/react/dialog`, `useRender`, `mergeProps`...), not Radix. Their props/API differ from the classic Radix-based shadcn docs — read the existing component instead of copying docs patterns.
+- Add new components with `npx shadcn add <component>`; they land in `src/components/ui` and import `cn` from `@/lib/utils`.
+- No registry overrides are configured (`registries: {}`); custom edits live directly in `src/components/ui` files.
+
+## Conventions
+
+- Path alias `@/*` → `src/*` (tsconfig `paths`).
+- App code lives in `src/app` (`layout.tsx`, `page.tsx`, `globals.css`); hooks in `src/hooks`.
+- ESLint (`npm run lint`) runs plain `eslint` over the repo using `eslint-config-next` core-web-vitals + TypeScript presets; `.next/`, `out/`, and `build/` are ignored via `globalIgnores` in `eslint.config.mjs`.
