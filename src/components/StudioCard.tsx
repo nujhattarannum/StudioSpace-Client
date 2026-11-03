@@ -21,8 +21,7 @@ export default function StudioCard({
   location,
   imageUrl,
   rating = 4.9,
-  reviewsCount = 120,
-}: StudioCardProps) {
+  reviewsCount = 120,}: StudioCardProps) {
   return (
     <div className="group flex flex-col overflow-hidden rounded-3xl border border-[#E5D3C0] bg-[#FFFCF7] transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
       {/* Image & Category Badge */}
