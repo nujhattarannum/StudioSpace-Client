@@ -1,12 +1,12 @@
 export default function HowBookingWorks() {
   return (
-    <section className="border-y border-[#E5D3C0] bg-[#FFFCF7] py-16">
+    <section className="border-y border-[#E5D3C0] bg-[#FFFCF7] py-16 dark:border-[#514034] dark:bg-[#211A16]">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="mb-12 text-center">
-          <h2 className="brand-font text-3xl font-bold text-[#4A291B]">
+          <h2 className="brand-font text-3xl font-bold text-[#4A291B] dark:text-[#F3E7D8]">
             How Booking Works
           </h2>
-          <p className="mt-1 text-sm text-[#78675B]">
+          <p className="mt-1 text-sm text-[#78675B] dark:text-[#C6B4A4]">
             Four simple steps to secure your production workspace.
           </p>
         </div>
@@ -20,13 +20,13 @@ export default function HowBookingWorks() {
           ].map((item, idx) => (
             <div
               key={idx}
-              className="relative flex flex-col rounded-2xl border border-[#E5D3C0] bg-[#FBF6EE] p-6 text-center"
+              className="relative flex flex-col rounded-2xl border border-[#E5D3C0] bg-[#FBF6EE] p-6 text-center dark:border-[#514034] dark:bg-[#30251F]"
             >
-              <div className="mx-auto mb-4 flex h-10 w-10 items-center justify-center rounded-full bg-[#4A291B] font-bold text-white">
+              <div className="mx-auto mb-4 flex h-10 w-10 items-center justify-center rounded-full bg-[#4A291B] font-bold text-white dark:bg-[#F3E7D8] dark:text-[#2C221E]">
                 {item.step}
               </div>
-              <h3 className="brand-font font-bold text-[#4A291B]">{item.title}</h3>
-              <p className="mt-1 text-xs text-[#78675B]">{item.desc}</p>
+              <h3 className="brand-font font-bold text-[#4A291B] dark:text-[#F3E7D8]">{item.title}</h3>
+              <p className="mt-1 text-xs text-[#78675B] dark:text-[#C6B4A4]">{item.desc}</p>
             </div>
           ))}
         </div>

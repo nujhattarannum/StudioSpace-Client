@@ -130,27 +130,27 @@ export default function MyBookingsPage() {
   };
 
   return (
-    <main className="min-h-screen bg-[#FBF6EE] px-4 py-10 md:px-12">
+    <main className="min-h-screen bg-[#FBF6EE] px-4 py-10 dark:bg-[#211A16] md:px-12">
       <div className="mx-auto max-w-6xl space-y-7">
 
         {/* HEADER */}
         <section className="flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <p className="text-[10px] font-bold uppercase tracking-widest text-[#8A796B]">
+            <p className="text-[10px] font-bold uppercase tracking-widest text-[#8A796B] dark:text-[#C6B4A4]">
               Your Creative Calendar
             </p>
 
-            <h1 className="brand-font mt-2 text-3xl font-extrabold text-[#4A291B]">
+            <h1 className="brand-font mt-2 text-3xl font-extrabold text-[#4A291B] dark:text-[#F3E7D8]">
               My bookings
             </h1>
 
-            <p className="mt-1 text-xs text-[#78675B]">
+            <p className="mt-1 text-xs text-[#78675B] dark:text-[#C6B4A4]">
               Less planning. More creating.
             </p>
           </div>
 
           <Link href="/studios">
-            <Button className="rounded-xl bg-[#4A291B] px-6 text-xs font-bold text-white hover:bg-[#2C221E]">
+            <Button className="rounded-xl bg-[#4A291B] px-6 text-xs font-bold text-white hover:bg-[#2C221E] dark:bg-[#F3E7D8] dark:text-[#2C221E] dark:hover:bg-[#E5D3C0]">
               Explore more studios
             </Button>
           </Link>
@@ -158,13 +158,13 @@ export default function MyBookingsPage() {
 
         {/* NEXT BOOKING BANNER */}
         {nextBooking && (
-          <section className="flex flex-col gap-3 rounded-2xl bg-[#F3E7D8] p-4 sm:flex-row sm:items-center sm:justify-between">
+          <section className="flex flex-col gap-3 rounded-2xl bg-[#F3E7D8] p-4 dark:bg-[#4A362A] sm:flex-row sm:items-center sm:justify-between">
             <div>
-              <h2 className="font-serif text-sm font-bold text-[#4A291B]">
+              <h2 className="font-serif text-sm font-bold text-[#4A291B] dark:text-[#F3E7D8]">
                 Your next great session is on the calendar.
               </h2>
 
-              <p className="mt-1 text-[10px] text-[#78675B]">
+              <p className="mt-1 text-[10px] text-[#78675B] dark:text-[#C6B4A4]">
                 {nextBooking.studioName} ·{" "}
                 {formatNextDate(nextBooking.bookingDate)} ·{" "}
                 {nextBooking.time}
@@ -173,7 +173,7 @@ export default function MyBookingsPage() {
 
             <Link
               href={`/studios/${nextBooking.studioId}`}
-              className="flex items-center gap-1 text-xs font-bold text-[#4A291B] hover:underline"
+              className="flex items-center gap-1 text-xs font-bold text-[#4A291B] hover:underline dark:text-[#F3E7D8]"
             >
               View booking <ArrowRight size={13} />
             </Link>
@@ -204,8 +204,8 @@ export default function MyBookingsPage() {
                 onClick={() => setActiveFilter(tab.label)}
                 className={`rounded-lg border px-5 py-2 text-[10px] font-bold transition ${
                   activeFilter === tab.label
-                    ? "border-[#4A291B] bg-[#4A291B] text-white"
-                    : "border-[#E5D3C0] bg-[#FFFCF7] text-[#4A291B] hover:bg-[#F3E7D8]"
+                    ? "border-[#4A291B] bg-[#4A291B] text-white dark:border-[#F3E7D8] dark:bg-[#F3E7D8] dark:text-[#2C221E]"
+                    : "border-[#E5D3C0] bg-[#FFFCF7] text-[#4A291B] hover:bg-[#F3E7D8] dark:border-[#514034] dark:bg-[#30251F] dark:text-[#F3E7D8] dark:hover:bg-[#4A362A]"
                 }`}
               >
                 {tab.label} ({tab.count})
@@ -213,7 +213,7 @@ export default function MyBookingsPage() {
             ))}
           </div>
 
-          <p className="flex items-center gap-1 text-[10px] text-[#8A796B]">
+          <p className="flex items-center gap-1 text-[10px] text-[#8A796B] dark:text-[#C6B4A4]">
             <ArrowUpDown size={12} />
             Sorted by booking date
           </p>
@@ -225,7 +225,7 @@ export default function MyBookingsPage() {
             filteredBookings.map((booking) => (
               <article
                 key={booking.id}
-                className="flex flex-col gap-4 rounded-2xl border border-[#E5D3C0] bg-[#FFFCF7] p-3 shadow-sm transition hover:shadow-md md:flex-row md:items-center"
+                className="flex flex-col gap-4 rounded-2xl border border-[#E5D3C0] bg-[#FFFCF7] p-3 shadow-sm transition hover:shadow-md dark:border-[#514034] dark:bg-[#30251F] md:flex-row md:items-center"
               >
                 {/* STUDIO IMAGE */}
                 <img
@@ -237,29 +237,29 @@ export default function MyBookingsPage() {
                 {/* BOOKING DETAILS */}
                 <div className="min-w-0 flex-1 space-y-2">
                   <div>
-                    <p className="text-[9px] font-medium text-[#8A796B]">
+                    <p className="text-[9px] font-medium text-[#8A796B] dark:text-[#C6B4A4]">
                       {booking.category} · #{booking.id}
                     </p>
 
-                    <h2 className="mt-1 text-base font-bold text-[#4A291B]">
+                    <h2 className="mt-1 text-base font-bold text-[#4A291B] dark:text-[#F3E7D8]">
                       {booking.studioName}
                     </h2>
 
-                    <p className="flex items-center gap-1 text-[10px] text-[#78675B]">
+                    <p className="flex items-center gap-1 text-[10px] text-[#78675B] dark:text-[#C6B4A4]">
                       <MapPin size={11} />
                       {booking.location}
                     </p>
                   </div>
 
-                  <div className="flex flex-wrap gap-x-8 gap-y-2 text-[10px] text-[#78675B]">
-                    <p className="font-semibold text-[#4A291B]">
+                  <div className="flex flex-wrap gap-x-8 gap-y-2 text-[10px] text-[#78675B] dark:text-[#C6B4A4]">
+                    <p className="font-semibold text-[#4A291B] dark:text-[#F3E7D8]">
                       {formatDate(booking.bookingDate)}
                     </p>
 
                     <p>{booking.time}</p>
                   </div>
 
-                  <p className="text-[10px] text-[#8A796B]">
+                  <p className="text-[10px] text-[#8A796B] dark:text-[#C6B4A4]">
                     {booking.duration} hours × ${booking.hourlyRate}
                   </p>
 
@@ -268,7 +268,7 @@ export default function MyBookingsPage() {
                     <Link href={`/studios/${booking.studioId}`}>
                       <Button
                         size="sm"
-                        className="h-8 rounded-lg bg-[#4A291B] px-5 text-[10px] font-bold text-white hover:bg-[#2C221E]"
+                        className="h-8 rounded-lg bg-[#4A291B] px-5 text-[10px] font-bold text-white hover:bg-[#2C221E] dark:bg-[#F3E7D8] dark:text-[#2C221E] dark:hover:bg-[#E5D3C0]"
                       >
                         {booking.status === "Completed"
                           ? "Book again"
@@ -281,7 +281,7 @@ export default function MyBookingsPage() {
                         <Button
                           size="sm"
                           variant="outline"
-                          className="h-8 rounded-lg border-[#E5D3C0] px-5 text-[10px] font-bold text-[#4A291B] hover:bg-[#F3E7D8]"
+                          className="h-8 rounded-lg border-[#E5D3C0] px-5 text-[10px] font-bold text-[#4A291B] hover:bg-[#F3E7D8] dark:border-[#665247] dark:text-[#F3E7D8] dark:hover:bg-[#4A362A]"
                         >
                           Contact host
                         </Button>
@@ -293,7 +293,7 @@ export default function MyBookingsPage() {
                         size="sm"
                         variant="outline"
                         disabled
-                        className="h-8 rounded-lg border-[#E5D3C0] px-5 text-[10px]"
+                        className="h-8 rounded-lg border-[#E5D3C0] px-5 text-[10px] dark:border-[#514034] dark:text-[#C6B4A4]"
                       >
                         Cancel request
                       </Button>
@@ -304,7 +304,7 @@ export default function MyBookingsPage() {
                         size="sm"
                         variant="outline"
                         disabled
-                        className="h-8 rounded-lg border-[#E5D3C0] px-5 text-[10px]"
+                        className="h-8 rounded-lg border-[#E5D3C0] px-5 text-[10px] dark:border-[#514034] dark:text-[#C6B4A4]"
                       >
                         Leave review
                       </Button>
@@ -313,25 +313,25 @@ export default function MyBookingsPage() {
                 </div>
 
                 {/* PRICE AND STATUS */}
-                <div className="flex flex-row items-center justify-between gap-4 border-t border-[#E5D3C0] pt-3 md:min-w-36 md:flex-col md:items-end md:justify-between md:self-stretch md:border-t-0 md:pt-0">
+                <div className="flex flex-row items-center justify-between gap-4 border-t border-[#E5D3C0] pt-3 dark:border-[#514034] md:min-w-36 md:flex-col md:items-end md:justify-between md:self-stretch md:border-t-0 md:pt-0">
                   <span
                     className={`rounded-md px-3 py-1 text-[9px] font-bold ${
                       booking.status === "Confirmed"
-                        ? "bg-[#F3E7D8] text-[#4A291B]"
+                        ? "bg-[#F3E7D8] text-[#4A291B] dark:bg-[#4A362A] dark:text-[#F3E7D8]"
                         : booking.status === "Pending"
-                          ? "bg-[#F7EBD5] text-[#8A622B]"
-                          : "bg-[#E8E8DC] text-[#536044]"
+                          ? "bg-[#F7EBD5] text-[#8A622B] dark:bg-[#4A362A] dark:text-[#E5C58F]"
+                          : "bg-[#E8E8DC] text-[#536044] dark:bg-[#354033] dark:text-[#C4D1B2]"
                     }`}
                   >
                     {booking.status}
                   </span>
 
                   <div className="text-right">
-                    <p className="text-lg font-extrabold text-[#4A291B]">
+                    <p className="text-lg font-extrabold text-[#4A291B] dark:text-[#F3E7D8]">
                       ${booking.totalPrice.toFixed(2)}
                     </p>
 
-                    <p className="text-[9px] text-[#8A796B]">
+                    <p className="text-[9px] text-[#8A796B] dark:text-[#C6B4A4]">
                       Total incl. service fee
                     </p>
                   </div>
@@ -339,22 +339,22 @@ export default function MyBookingsPage() {
               </article>
             ))
           ) : (
-            <div className="rounded-2xl border border-dashed border-[#E5D3C0] bg-[#FFFCF7] py-16 text-center">
+            <div className="rounded-2xl border border-dashed border-[#E5D3C0] bg-[#FFFCF7] py-16 text-center dark:border-[#514034] dark:bg-[#30251F]">
               <CalendarDays
                 size={35}
-                className="mx-auto text-[#8A796B]"
+                className="mx-auto text-[#8A796B] dark:text-[#C6B4A4]"
               />
 
-              <h3 className="mt-3 font-bold text-[#4A291B]">
+              <h3 className="mt-3 font-bold text-[#4A291B] dark:text-[#F3E7D8]">
                 No bookings found
               </h3>
 
-              <p className="mt-1 text-xs text-[#78675B]">
+              <p className="mt-1 text-xs text-[#78675B] dark:text-[#C6B4A4]">
                 You don&apos;t have any {activeFilter.toLowerCase()} bookings.
               </p>
 
               <Link href="/studios">
-                <Button className="mt-5 rounded-xl bg-[#4A291B] text-xs text-white hover:bg-[#2C221E]">
+                <Button className="mt-5 rounded-xl bg-[#4A291B] text-xs text-white hover:bg-[#2C221E] dark:bg-[#F3E7D8] dark:text-[#2C221E] dark:hover:bg-[#E5D3C0]">
                   Explore studios
                 </Button>
               </Link>
@@ -363,13 +363,13 @@ export default function MyBookingsPage() {
         </section>
 
         {/* FOOTER / SUPPORT */}
-        <section className="flex flex-col gap-3 border-t border-[#E5D3C0] pt-6 sm:flex-row sm:items-center sm:justify-between">
+        <section className="flex flex-col gap-3 border-t border-[#E5D3C0] pt-6 dark:border-[#514034] sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <h2 className="font-serif text-sm font-bold text-[#4A291B]">
+            <h2 className="font-serif text-sm font-bold text-[#4A291B] dark:text-[#F3E7D8]">
               Need help with a booking?
             </h2>
 
-            <p className="mt-1 text-[10px] text-[#78675B]">
+            <p className="mt-1 text-[10px] text-[#78675B] dark:text-[#C6B4A4]">
               Our creator support team is here for you.
             </p>
           </div>
@@ -377,7 +377,7 @@ export default function MyBookingsPage() {
           <a href="mailto:support@studiospace.com">
             <Button
               variant="outline"
-              className="rounded-xl border-[#E5D3C0] bg-[#FFFCF7] px-6 text-xs font-bold text-[#4A291B] hover:bg-[#F3E7D8]"
+              className="rounded-xl border-[#E5D3C0] bg-[#FFFCF7] px-6 text-xs font-bold text-[#4A291B] hover:bg-[#F3E7D8] dark:border-[#665247] dark:bg-[#30251F] dark:text-[#F3E7D8] dark:hover:bg-[#4A362A]"
             >
               Contact support
             </Button>

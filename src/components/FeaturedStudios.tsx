@@ -37,16 +37,16 @@ export default function FeaturedStudios() {
     <section className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
       <div className="mb-8 flex items-end justify-between">
         <div>
-          <h2 className="brand-font text-3xl font-bold text-[#4A291B]">
+          <h2 className="brand-font text-3xl font-bold text-[#4A291B] dark:text-[#F3E7D8]">
             Featured Studios
           </h2>
-          <p className="mt-1 text-sm text-[#78675B]">
+          <p className="mt-1 text-sm text-[#78675B] dark:text-[#C6B4A4]">
             Top-rated and newest workspace productions available right now.
           </p>
         </div>
         <Link
           href="/studios"
-          className="group inline-flex items-center gap-1 text-sm font-bold text-[#4A291B] transition hover:underline"
+          className="group inline-flex items-center gap-1 text-sm font-bold text-[#4A291B] transition hover:underline dark:text-[#F3E7D8]"
         >
           View All Studios <ArrowRight size={16} className="transition-transform group-hover:translate-x-1" />
         </Link>
@@ -55,7 +55,7 @@ export default function FeaturedStudios() {
       {isLoading ? (
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {[1, 2, 3].map((n) => (
-            <div key={n} className="h-80 animate-pulse rounded-3xl bg-[#E5D3C0]/40" />
+            <div key={n} className="h-80 animate-pulse rounded-3xl bg-[#E5D3C0]/40 dark:bg-[#4A362A]/50" />
           ))}
         </div>
       ) : (
