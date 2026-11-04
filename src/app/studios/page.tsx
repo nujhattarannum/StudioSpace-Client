@@ -9,21 +9,7 @@ import {
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-
-interface Studio {
-  _id: string;
-  title: string;
-  category: string;
-  hourlyRate: number;
-  securityDeposit: number;
-  capacity: number;
-  location: string;
-  imageUrl: string;
-  amenities: string[];
-  description: string;
-  ownerName?: string;
-  ownerEmail?: string;
-}
+import { Studio } from "@/types/studio";
 
 const categories = [
   "All",
@@ -79,39 +65,6 @@ export default function ExploreStudiosPage() {
 
   return (
     <main className="min-h-screen bg-[#FBF6EE]">
-      {/* Header / Navbar */}
-      <header className="sticky top-0 z-40 border-b border-[#E5D3C0] bg-[#FBF6EE]/95 backdrop-blur-md">
-        <nav className="mx-auto flex max-w-7xl items-center justify-between px-5 py-4 lg:px-8">
-          <Link href="/" className="flex items-center gap-2 text-[#4A291B]">
-            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#F3E7D8]">
-              <Camera size={25} />
-            </div>
-            <span className="brand-font text-2xl font-bold">StudioSpace</span>
-          </Link>
-
-          <div className="hidden items-center gap-7 text-sm font-semibold text-[#78675B] md:flex">
-            <Link href="/" className="transition hover:text-[#4A291B]">
-              Home
-            </Link>
-            <Link
-              href="/studios"
-              className="text-[#4A291B] underline decoration-2 underline-offset-8"
-            >
-              Explore Studios
-            </Link>
-            <Link href="/my-listings" className="transition hover:text-[#4A291B]">
-              My Listings
-            </Link>
-          </div>
-
-          <Link href="/add-studio">
-            <Button className="rounded-xl bg-[#4A291B] px-5 text-white hover:bg-[#2C221E]">
-              Host Your Space
-            </Button>
-          </Link>
-        </nav>
-      </header>
-
       {/* Page Heading & Hero Header */}
       <section className="px-4 pb-6 pt-10 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-7xl">

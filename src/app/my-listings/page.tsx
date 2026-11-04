@@ -16,17 +16,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { authClient } from "@/lib/auth-client";
 import DeleteStudioDialog from "@/components/DeleteStudioDialog";
- // Import your delete component
-
-interface Studio {
-  _id: string;
-  title: string;
-  category: string;
-  hourlyRate: number;
-  location: string;
-  imageUrl: string;
-  ownerEmail?: string;
-}
+import { Studio } from "@/types/studio";
 
 export default function MyListingsPage() {
   const router = useRouter();

@@ -9,21 +9,8 @@ import {
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Studio } from "@/types/studio";
 
-interface Studio {
-  _id: string;
-  title: string;
-  category: string;
-  hourlyRate: number;
-  securityDeposit: number;
-  capacity: number;
-  location: string;
-  imageUrl: string;
-  amenities: string[];
-  description: string;
-  ownerName?: string;
-  ownerEmail?: string;
-}
 
 export default function StudioDetailsPage({ params,}: { params: Promise<{ id: string }>;}) {
   const resolvedParams = use(params);
