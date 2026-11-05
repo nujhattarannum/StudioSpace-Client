@@ -21,7 +21,7 @@ export default function FeaturedStudios() {
   useEffect(() => {
     async function fetchFeatured() {
       try {
-        const res = await fetch("http://localhost:8000/featured-studios");
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/featured-studios`);
         const data = await res.json();
         setFeaturedStudios(data); // Limit to 6 studios as required
       } catch (error) {

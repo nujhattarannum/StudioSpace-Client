@@ -12,9 +12,12 @@ import { Studio } from "@/types/studio";
 
 import { imageConfigDefault } from "next/dist/shared/lib/image-config";
 import BookingCard from "@/components/BookingCard";
+import { auth } from "@/lib/auth";
+
 
 
 export default function StudioDetailsPage({ params,}: { params: Promise<{ id: string }>;}) {
+
   const resolvedParams = use(params);
   const studioId = resolvedParams.id;
 
@@ -24,7 +27,7 @@ export default function StudioDetailsPage({ params,}: { params: Promise<{ id: st
 
   useEffect(() => { async function fetchStudioDetails() {
       try {
-        const res = await fetch(`http://localhost:8000/studios/${studioId}`);
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/studios/${studioId}`);
         if (!res.ok) {
           throw new Error("Studio not found");
         }

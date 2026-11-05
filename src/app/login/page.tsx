@@ -51,7 +51,7 @@ export default function LoginPage() {
     }
   };
 
-  const handleSocialLogin = async (provider: "google" | "github") => {
+  const handleSocialLogin = async (provider: "google") => {
     setIsSocialLoading(provider);
     try {
       await authClient.signIn.social({
@@ -82,36 +82,22 @@ export default function LoginPage() {
           </p>
         </div>
 
-        {/* Social Login Buttons */}
-        <div className="grid grid-cols-2 gap-3">
-          <Button
-            type="button"
-            variant="outline"
-            disabled={isSocialLoading !== null}
-            onClick={() => handleSocialLogin("google")}
-            className="h-11 rounded-xl border-[#E5D3C0] bg-[#FFFCF7] text-xs font-bold text-[#4A291B] hover:bg-[#F3E7D8] dark:border-[#514034] dark:bg-[#30251F] dark:text-[#F3E7D8] dark:hover:bg-[#4A362A]"
-          >
-            {isSocialLoading === "google" ? (
-              <Loader2 size={16} className="animate-spin" />
-            ) : (
-              <span>Google</span>
-            )}
-          </Button>
-
-          <Button
-            type="button"
-            variant="outline"
-            disabled={isSocialLoading !== null}
-            onClick={() => handleSocialLogin("github")}
-            className="h-11 rounded-xl border-[#E5D3C0] bg-[#FFFCF7] text-xs font-bold text-[#4A291B] hover:bg-[#F3E7D8] dark:border-[#514034] dark:bg-[#30251F] dark:text-[#F3E7D8] dark:hover:bg-[#4A362A]"
-          >
-            {isSocialLoading === "github" ? (
-              <Loader2 size={16} className="animate-spin" />
-            ) : (
-              <span>GitHub</span>
-            )}
-          </Button>
-        </div>
+       {/* Social Login Button */}
+<div className="w-full">
+  <Button
+    type="button"
+    variant="outline"
+    disabled={isSocialLoading !== null}
+    onClick={() => handleSocialLogin("google")}
+    className="h-11 w-full rounded-xl border-[#E5D3C0] bg-[#FFFCF7] text-xs font-bold text-[#4A291B] hover:bg-[#F3E7D8] dark:border-[#514034] dark:bg-[#30251F] dark:text-[#F3E7D8] dark:hover:bg-[#4A362A]"
+  >
+    {isSocialLoading === "google" ? (
+      <Loader2 size={16} className="animate-spin" />
+    ) : (
+      <span>Google</span>
+    )}
+  </Button>
+</div>
 
         <div className="relative flex items-center justify-center">
           <div className="absolute inset-0 flex items-center">

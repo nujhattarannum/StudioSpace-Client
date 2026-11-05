@@ -32,7 +32,7 @@ useEffect(() => {
   const fetchMyListings = async (userEmail: string) => {
     try {
 
-      const res = await fetch("http://localhost:8000/studios");
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/studios`);
       if (!res.ok) throw new Error("Failed to fetch studios");
 
       const data: Studio[] = await res.json();

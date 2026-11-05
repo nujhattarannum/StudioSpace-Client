@@ -50,7 +50,7 @@ export default function MyBookingsPage() {
   async function fetchUserBookings() {
     try {
       const res = await fetch(
-        `http://localhost:8000/my-booking/${user?.email}`
+        `${process.env.NEXT_PUBLIC_API_URL}/my-booking/${user?.email}`
       );
 
       if (!res.ok) {
@@ -82,7 +82,7 @@ export default function MyBookingsPage() {
     try {
       setCancellingId(bookingId);
 
-      const res = await fetch( `http://localhost:8000/my-booking/${bookingId}/cancel`,
+      const res = await fetch( `${process.env.NEXT_PUBLIC_API_URL}/my-booking/${bookingId}/cancel`,
         {
           method: "PATCH",
         }

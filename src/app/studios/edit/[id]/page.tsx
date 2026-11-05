@@ -47,7 +47,7 @@ export default function UpdateStudioPage() {
 
     const fetchStudio = async () => {
       try {
-        const res = await fetch("http://localhost:8000/studios");
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/studios`);
 
         if (!res.ok) {
           throw new Error("Failed to fetch studios");
@@ -139,7 +139,7 @@ export default function UpdateStudioPage() {
       };
 
       const res = await fetch(
-        `http://localhost:8000/studios/${id}`,
+        `${process.env.NEXT_PUBLIC_API_URL}/studios/${id}`,
         {
           method: "PUT",
           headers: {

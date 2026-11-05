@@ -110,7 +110,7 @@ export default function AddStudioPage() {
     setIsSubmitting(true);
 
     try {
-      const res = await fetch("http://localhost:8000/add-studio", {
+      const res = await fetch('${process.env.NEXT_PUBLIC_API_URL}/add-studio', {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

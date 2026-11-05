@@ -10,12 +10,12 @@ export async function proxy(request: NextRequest) {
     }
 
     )
- // return NextResponse.redirect(new URL('/home', request.url))
+ return NextResponse.redirect(new URL('/', request.url))
 }
 
 // Alternatively, you can use a default export:
 // export default function proxy(request: NextRequest) { ... }
 
 export const config = {
-  matcher: ['/add-studio','/studios','/studios/[id]',' /studios/edit/[id]'],
+  matcher: ['/add-studio', '/studios', '/studios/[id]', '/studios/edit/[id]'],
 }

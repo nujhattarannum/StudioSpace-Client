@@ -31,7 +31,7 @@ const DeleteStudioDialog = ({selectedStudio}:IStudioProps) => {
      const handleDeleteStudio = async () => {
 
     try {
-      const res = await fetch(`http://localhost:8000/my-listings/${selectedStudio._id}`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/my-listings/${selectedStudio._id}`, {
         method: "DELETE",
       });
 
