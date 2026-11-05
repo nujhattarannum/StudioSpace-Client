@@ -7,6 +7,7 @@ export interface Studio {
   capacity?: number;
   location: string;
   imageUrl: string;
+  status?: string;
   amenities?: string[];
   description?: string;
   ownerEmail?: string;

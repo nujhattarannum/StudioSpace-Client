@@ -4,7 +4,16 @@ import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
-import { Camera, Lock, Mail, User, Image as ImageIcon, Loader2, CheckCircle2, XCircle } from "lucide-react";
+import {
+  Camera,
+  Lock,
+  Mail,
+  User,
+  Image as ImageIcon,
+  Loader2,
+  CheckCircle2,
+  XCircle,
+} from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -13,11 +22,7 @@ import { authClient } from "@/lib/auth-client";
 export default function RegisterPage() {
   const router = useRouter();
 
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [photoURL, setPhotoURL] = useState("");
   const [password, setPassword] = useState("");
-
   const [passwordError, setPasswordError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isSocialLoading, setIsSocialLoading] = useState<string | null>(null);
@@ -27,10 +32,23 @@ export default function RegisterPage() {
   const hasLowercase = /[a-z]/.test(password);
   const isValidLength = password.length >= 6;
 
-  const handleRegister = async (e: React.FormEvent) => {
+  const handleRegister = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    // Validate password criteria
+    const formdata = new FormData(e.currentTarget);
+
+    const user = Object.fromEntries(formdata.entries()) as {
+      name: string;
+      email: string;
+      photoURL: string;
+      password: string;
+    };
+
+    // Password validation
+    const hasUppercase = /[A-Z]/.test(user.password);
+    const hasLowercase = /[a-z]/.test(user.password);
+    const isValidLength = user.password.length >= 6;
+
     if (!hasUppercase || !hasLowercase || !isValidLength) {
       setPasswordError("Please meet all password requirements.");
       toast.error("Password does not meet validation criteria.");
@@ -42,22 +60,21 @@ export default function RegisterPage() {
 
     try {
       const { data, error } = await authClient.signUp.email({
-        email,
-        password,
-        name,
-        image: photoURL,
-      }, {
-        onSuccess: () => {
-          toast.success("Account created successfully!");
-          router.push("/login");
-        },
-        onError: (ctx) => {
-          toast.error(ctx.error.message || "Registration failed. Try again.");
-        },
+        name: user.name,
+        email: user.email,
+        password: user.password,
+        image: user.photoURL,
       });
 
       if (error) {
         toast.error(error.message || "Failed to register.");
+        console.log(error);
+        return;
+      }
+
+      if (data) {
+        toast.success("Successfully Registered");
+        router.push("/");
       }
     } catch (err) {
       console.error(err);
@@ -69,10 +86,11 @@ export default function RegisterPage() {
 
   const handleSocialLogin = async (provider: "google" | "github") => {
     setIsSocialLoading(provider);
+
     try {
       await authClient.signIn.social({
         provider: provider,
-        callbackURL: "/", // Navigate user to Home page after social login
+        callbackURL: "/",
       });
     } catch (err) {
       console.error(err);
@@ -90,9 +108,11 @@ export default function RegisterPage() {
           <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-[#F3E7D8] text-[#4A291B] dark:bg-[#4A362A] dark:text-[#F3E7D8]">
             <Camera size={24} />
           </div>
+
           <h2 className="brand-font mt-4 text-3xl font-extrabold tracking-tight text-[#4A291B] dark:text-[#F3E7D8]">
             Create an Account
           </h2>
+
           <p className="mt-1 text-xs font-semibold text-[#78675B] dark:text-[#C6B4A4]">
             Join StudioSpace to book and list creative workspaces
           </p>
@@ -133,6 +153,7 @@ export default function RegisterPage() {
           <div className="absolute inset-0 flex items-center">
             <div className="w-full border-t border-[#E5D3C0] dark:border-[#514034]" />
           </div>
+
           <span className="relative bg-[#FFFCF7] px-3 text-[11px] font-bold uppercase tracking-wider text-[#8A796B] dark:bg-[#30251F] dark:text-[#C6B4A4]">
             Or with email
           </span>
@@ -140,17 +161,24 @@ export default function RegisterPage() {
 
         {/* Registration Form */}
         <form onSubmit={handleRegister} className="space-y-4">
+
           {/* Name Field */}
           <div className="space-y-1">
-            <label className="text-xs font-bold text-[#4A291B] dark:text-[#F3E7D8]">Full Name</label>
+            <label className="text-xs font-bold text-[#4A291B] dark:text-[#F3E7D8]">
+              Full Name
+            </label>
+
             <div className="relative flex items-center">
-              <User size={16} className="absolute left-3 text-[#8A796B] dark:text-[#C6B4A4]" />
+              <User
+                size={16}
+                className="absolute left-3 text-[#8A796B] dark:text-[#C6B4A4]"
+              />
+
               <Input
                 type="text"
+                name="name"
                 required
                 placeholder="Nujhat Tasnim"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
                 className="h-11 rounded-xl border-[#E5D3C0] bg-[#FBF6EE] pl-10 text-xs font-semibold text-[#4A291B] focus-visible:ring-[#4A291B] dark:border-[#514034] dark:bg-[#211A16] dark:text-[#F3E7D8] dark:placeholder:text-[#8A796B] dark:focus-visible:ring-[#C6B4A4]"
               />
             </div>
@@ -158,15 +186,21 @@ export default function RegisterPage() {
 
           {/* Email Field */}
           <div className="space-y-1">
-            <label className="text-xs font-bold text-[#4A291B] dark:text-[#F3E7D8]">Email Address</label>
+            <label className="text-xs font-bold text-[#4A291B] dark:text-[#F3E7D8]">
+              Email Address
+            </label>
+
             <div className="relative flex items-center">
-              <Mail size={16} className="absolute left-3 text-[#8A796B] dark:text-[#C6B4A4]" />
+              <Mail
+                size={16}
+                className="absolute left-3 text-[#8A796B] dark:text-[#C6B4A4]"
+              />
+
               <Input
                 type="email"
+                name="email"
                 required
                 placeholder="nujhat@studiospace.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
                 className="h-11 rounded-xl border-[#E5D3C0] bg-[#FBF6EE] pl-10 text-xs font-semibold text-[#4A291B] focus-visible:ring-[#4A291B] dark:border-[#514034] dark:bg-[#211A16] dark:text-[#F3E7D8] dark:placeholder:text-[#8A796B] dark:focus-visible:ring-[#C6B4A4]"
               />
             </div>
@@ -174,15 +208,21 @@ export default function RegisterPage() {
 
           {/* Photo URL Field */}
           <div className="space-y-1">
-            <label className="text-xs font-bold text-[#4A291B] dark:text-[#F3E7D8]">Photo URL</label>
+            <label className="text-xs font-bold text-[#4A291B] dark:text-[#F3E7D8]">
+              Photo URL
+            </label>
+
             <div className="relative flex items-center">
-              <ImageIcon size={16} className="absolute left-3 text-[#8A796B] dark:text-[#C6B4A4]" />
+              <ImageIcon
+                size={16}
+                className="absolute left-3 text-[#8A796B] dark:text-[#C6B4A4]"
+              />
+
               <Input
                 type="url"
+                name="photoURL"
                 required
                 placeholder="https://example.com/avatar.jpg"
-                value={photoURL}
-                onChange={(e) => setPhotoURL(e.target.value)}
                 className="h-11 rounded-xl border-[#E5D3C0] bg-[#FBF6EE] pl-10 text-xs font-semibold text-[#4A291B] focus-visible:ring-[#4A291B] dark:border-[#514034] dark:bg-[#211A16] dark:text-[#F3E7D8] dark:placeholder:text-[#8A796B] dark:focus-visible:ring-[#C6B4A4]"
               />
             </div>
@@ -190,11 +230,19 @@ export default function RegisterPage() {
 
           {/* Password Field */}
           <div className="space-y-1">
-            <label className="text-xs font-bold text-[#4A291B] dark:text-[#F3E7D8]">Password</label>
+            <label className="text-xs font-bold text-[#4A291B] dark:text-[#F3E7D8]">
+              Password
+            </label>
+
             <div className="relative flex items-center">
-              <Lock size={16} className="absolute left-3 text-[#8A796B] dark:text-[#C6B4A4]" />
+              <Lock
+                size={16}
+                className="absolute left-3 text-[#8A796B] dark:text-[#C6B4A4]"
+              />
+
               <Input
                 type="password"
+                name="password"
                 required
                 placeholder="••••••••"
                 value={password}
@@ -206,20 +254,61 @@ export default function RegisterPage() {
 
           {/* Live Password Validation Checklist */}
           <div className="rounded-xl border border-[#E5D3C0] bg-[#F3E7D8]/40 p-3 space-y-1.5 dark:border-[#514034] dark:bg-[#4A362A]/40">
-            <p className="text-[11px] font-bold text-[#4A291B] dark:text-[#F3E7D8]">Password Requirements:</p>
+            <p className="text-[11px] font-bold text-[#4A291B] dark:text-[#F3E7D8]">
+              Password Requirements:
+            </p>
+
             <div className="grid grid-cols-1 gap-1 text-[11px]">
-              <div className={`flex items-center gap-1.5 ${isValidLength ? "text-green-700 font-semibold dark:text-green-400" : "text-[#78675B] dark:text-[#C6B4A4]"}`}>
-                {isValidLength ? <CheckCircle2 size={13} /> : <XCircle size={13} />} At least 6 characters long
+              <div
+                className={`flex items-center gap-1.5 ${
+                  isValidLength
+                    ? "text-green-700 font-semibold dark:text-green-400"
+                    : "text-[#78675B] dark:text-[#C6B4A4]"
+                }`}
+              >
+                {isValidLength ? (
+                  <CheckCircle2 size={13} />
+                ) : (
+                  <XCircle size={13} />
+                )}
+                At least 6 characters long
               </div>
-              <div className={`flex items-center gap-1.5 ${hasUppercase ? "text-green-700 font-semibold dark:text-green-400" : "text-[#78675B] dark:text-[#C6B4A4]"}`}>
-                {hasUppercase ? <CheckCircle2 size={13} /> : <XCircle size={13} />} Must include an Uppercase letter
+
+              <div
+                className={`flex items-center gap-1.5 ${
+                  hasUppercase
+                    ? "text-green-700 font-semibold dark:text-green-400"
+                    : "text-[#78675B] dark:text-[#C6B4A4]"
+                }`}
+              >
+                {hasUppercase ? (
+                  <CheckCircle2 size={13} />
+                ) : (
+                  <XCircle size={13} />
+                )}
+                Must include an Uppercase letter
               </div>
-              <div className={`flex items-center gap-1.5 ${hasLowercase ? "text-green-700 font-semibold dark:text-green-400" : "text-[#78675B] dark:text-[#C6B4A4]"}`}>
-                {hasLowercase ? <CheckCircle2 size={13} /> : <XCircle size={13} />} Must include a Lowercase letter
+
+              <div
+                className={`flex items-center gap-1.5 ${
+                  hasLowercase
+                    ? "text-green-700 font-semibold dark:text-green-400"
+                    : "text-[#78675B] dark:text-[#C6B4A4]"
+                }`}
+              >
+                {hasLowercase ? (
+                  <CheckCircle2 size={13} />
+                ) : (
+                  <XCircle size={13} />
+                )}
+                Must include a Lowercase letter
               </div>
             </div>
+
             {passwordError && (
-              <p className="pt-1 text-[11px] font-bold text-red-600 dark:text-red-400">{passwordError}</p>
+              <p className="pt-1 text-[11px] font-bold text-red-600 dark:text-red-400">
+                {passwordError}
+              </p>
             )}
           </div>
 
@@ -231,7 +320,8 @@ export default function RegisterPage() {
           >
             {isLoading ? (
               <>
-                <Loader2 size={16} className="mr-2 animate-spin" /> Creating Account...
+                <Loader2 size={16} className="mr-2 animate-spin" />
+                Creating Account...
               </>
             ) : (
               "Register"
@@ -243,7 +333,10 @@ export default function RegisterPage() {
         <div className="text-center pt-2">
           <p className="text-xs text-[#78675B] dark:text-[#C6B4A4]">
             Already have an account?{" "}
-            <Link href="/login" className="font-bold text-[#4A291B] hover:underline dark:text-[#F3E7D8]">
+            <Link
+              href="/login"
+              className="font-bold text-[#4A291B] hover:underline dark:text-[#F3E7D8]"
+            >
               Login here
             </Link>
           </p>

@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { redirect } from "next/navigation";
 import { toast } from "react-toastify";
 import { Camera, Lock, Mail, Loader2 } from "lucide-react";
 
@@ -11,26 +11,29 @@ import { Input } from "@/components/ui/input";
 import { authClient } from "@/lib/auth-client";
 
 export default function LoginPage() {
-  const router = useRouter();
-
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-
+   const [password, setPassword] = useState("");
+    const [passwordError, setPasswordError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isSocialLoading, setIsSocialLoading] = useState<string | null>(null);
 
-  const handleLogin = async (e: React.FormEvent) => {
+  const handleLogin = async (e: React.SubmitEvent<HTMLElement>) => {
     e.preventDefault();
-    setIsLoading(true);
+
+
+    const formdata = new FormData(e.target)
+    const user =Object.fromEntries(formdata.entries()) as 
+    {
+      email : string,
+      password : string,
+    }
 
     try {
       const { data, error } = await authClient.signIn.email({
-        email,
-        password,
+       ...user
       }, {
         onSuccess: () => {
           toast.success("Logged in successfully!");
-          router.push("/"); // Navigate user to Home page after successful login
+          redirect("/"); // Navigate user to Home page after successful login
         },
         onError: (ctx) => {
           toast.error(ctx.error.message || "Invalid email or password.");
@@ -127,11 +130,10 @@ export default function LoginPage() {
             <div className="relative flex items-center">
               <Mail size={16} className="absolute left-3 text-[#8A796B] dark:text-[#C6B4A4]" />
               <Input
-                type="email"
+               type="email"
+                name="email"
                 required
                 placeholder="nujhat@studiospace.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
                 className="h-11 rounded-xl border-[#E5D3C0] bg-[#FBF6EE] pl-10 text-xs font-semibold text-[#4A291B] focus-visible:ring-[#4A291B] dark:border-[#514034] dark:bg-[#211A16] dark:text-[#F3E7D8] dark:placeholder:text-[#8A796B] dark:focus-visible:ring-[#C6B4A4]"
               />
             </div>
@@ -143,7 +145,8 @@ export default function LoginPage() {
             <div className="relative flex items-center">
               <Lock size={16} className="absolute left-3 text-[#8A796B] dark:text-[#C6B4A4]" />
               <Input
-                type="password"
+                 type="password"
+                name="password"
                 required
                 placeholder="••••••••"
                 value={password}

@@ -3,13 +3,15 @@
 import { use, useEffect, useState } from "react";
 import Link from "next/link";
 import { toast } from "react-toastify";
+import { Button } from "@/components/ui/button";
 import {
   Camera,  MapPin,  Star,  Share2,  Heart,  Check,  ShieldCheck,  Loader2,  ArrowLeft, Grid,
 } from "lucide-react";
 
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Studio } from "@/types/studio";
+
+import { imageConfigDefault } from "next/dist/shared/lib/image-config";
+import BookingCard from "@/components/BookingCard";
 
 
 export default function StudioDetailsPage({ params,}: { params: Promise<{ id: string }>;}) {
@@ -20,14 +22,7 @@ export default function StudioDetailsPage({ params,}: { params: Promise<{ id: st
   const [isLoading, setIsLoading] = useState(true);
   const [isSaved, setIsSaved] = useState(false);
 
-  // Booking Form States
-  const [bookingDate, setBookingDate] = useState("");
-  const [bookingTime, setBookingTime] = useState("");
-  const [guestsCount, setGuestsCount] = useState(1);
-  const [isBooking, setIsBooking] = useState(false);
-
-  useEffect(() => {
-    async function fetchStudioDetails() {
+  useEffect(() => { async function fetchStudioDetails() {
       try {
         const res = await fetch(`http://localhost:8000/studios/${studioId}`);
         if (!res.ok) {
@@ -44,26 +39,6 @@ export default function StudioDetailsPage({ params,}: { params: Promise<{ id: st
     fetchStudioDetails();
   }, [studioId]);
 
-  const handleBooking = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    if (!bookingDate || !bookingTime) {
-      toast.error("Please select a date and time for your booking.");
-      return;
-    }
-
-    setIsBooking(true);
-
-    try {
-      // Simulate/Trigger reservation insertion
-      toast.success("Workspace booking request submitted successfully!");
-    } catch (err) {
-      console.error(err);
-      toast.error("Failed to book workspace. Please try again.");
-    } finally {
-      setIsBooking(false);
-    }
-  };
 
   const toggleSave = () => {
     setIsSaved(!isSaved);
@@ -335,112 +310,7 @@ export default function StudioDetailsPage({ params,}: { params: Promise<{ id: st
           </div>
 
           {/* Right Column: Sticky Booking Box */}
-          <div className="lg:col-span-1">
-            <div className="sticky top-28 space-y-6">
-              {/* Booking Card */}
-              <div className="rounded-3xl border border-[#E5D3C0] bg-[#FFFCF7] p-6 shadow-sm">
-                <div className="flex items-baseline justify-between border-b border-[#E5D3C0] pb-5">
-                  <div>
-                    <span className="brand-font text-3xl font-extrabold text-[#4A291B]">
-                      ${studio.hourlyRate}
-                    </span>
-                    <span className="text-xs font-medium text-[#78675B]"> / hour</span>
-                  </div>
-                </div>
-
-                <form onSubmit={handleBooking} className="mt-6 space-y-4">
-                  <div className="space-y-1">
-                    <label className="text-xs font-bold text-[#4A291B]">
-                      Plan your next session
-                    </label>
-                    <div className="rounded-xl border border-[#E5D3C0] bg-[#FBF6EE] p-3">
-                      <span className="block text-[10px] font-bold text-[#8A796B]">
-                        DATE
-                      </span>
-                      <Input
-                        type="date"
-                        value={bookingDate}
-                        onChange={(e) => setBookingDate(e.target.value)}
-                        className="h-7 border-none bg-transparent p-0 text-xs font-semibold text-[#4A291B] focus-visible:ring-0"
-                      />
-                    </div>
-                  </div>
-
-                  <div className="rounded-xl border border-[#E5D3C0] bg-[#FBF6EE] p-3">
-                    <span className="block text-[10px] font-bold text-[#8A796B]">
-                      TIME SLOT
-                    </span>
-                    <Input
-                      type="text"
-                      placeholder="Start time — End time (e.g. 10 AM - 2 PM)"
-                      value={bookingTime}
-                      onChange={(e) => setBookingTime(e.target.value)}
-                      className="h-7 border-none bg-transparent p-0 text-xs font-semibold text-[#4A291B] focus-visible:ring-0 placeholder:text-[#8A796B]/60"
-                    />
-                  </div>
-
-                  <div className="rounded-xl border border-[#E5D3C0] bg-[#FBF6EE] p-3">
-                    <span className="block text-[10px] font-bold text-[#8A796B]">
-                      GUESTS
-                    </span>
-                    <select
-                      value={guestsCount}
-                      onChange={(e) => setGuestsCount(Number(e.target.value))}
-                      className="w-full border-none bg-transparent text-xs font-semibold text-[#4A291B] outline-none"
-                    >
-                      {[1, 2, 4, 6, 8, 10, 15, 20].map((num) => (
-                        <option key={num} value={num}>
-                          {num} {num === 1 ? "guest" : "guests"}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-
-                  <Button
-                    type="submit"
-                    disabled={isBooking}
-                    className="mt-2 h-12 w-full rounded-xl bg-[#4A291B] font-bold text-white hover:bg-[#2C221E]"
-                  >
-                    {isBooking ? "Processing..." : "Book Workspace Now"}
-                  </Button>
-
-                  <p className="text-center text-[11px] text-[#78675B]">
-                    You won&apos;t be charged yet
-                  </p>
-
-                  <div className="mt-4 flex items-center justify-center gap-4 border-t border-[#E5D3C0] pt-4 text-[11px] font-bold text-[#4A291B]">
-                    <span className="flex items-center gap-1">
-                      <ShieldCheck size={14} /> Secure payments
-                    </span>
-                    <span className="flex items-center gap-1">
-                      <Check size={14} /> Verified space
-                    </span>
-                  </div>
-                </form>
-              </div>
-
-              {/* Confidence Assurance Banner */}
-              <div className="rounded-3xl border border-[#E5D3C0] bg-[#F3E7D8]/60 p-6">
-                <h4 className="brand-font text-lg font-bold text-[#4A291B]">
-                  Create with confidence
-                </h4>
-                <ul className="mt-3 space-y-2 text-xs font-medium text-[#78675B]">
-                  <li className="flex items-center gap-2">
-                    <Check size={14} className="text-[#4A291B]" />
-                    Verified workspace and host
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <Check size={14} className="text-[#4A291B]" />
-                    Equipment safety standards
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <Check size={14} className="text-[#4A291B]" />
-                    Creator support, every step of the way
-                  </li>
-                </ul>
-              </div>
-            </div>
-          </div>
+          <BookingCard studio = {studio}/>
         </div>
       </section>
     </main>

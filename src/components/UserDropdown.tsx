@@ -1,17 +1,9 @@
 "use client";
 
+import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
-
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 
 import {
   LayoutDashboard,
@@ -32,13 +24,25 @@ interface IUserDropdownProps {
   };
 }
 
-const UserDropdown = ({ user }: IUserDropdownProps) => {
+export default function UserDropdown({ user }: IUserDropdownProps) {
   const router = useRouter();
+  const [isOpen, setIsOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setIsOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   const handleLogout = async () => {
     try {
       await authClient.signOut();
-
       toast.success("Logged out successfully!");
       router.push("/login");
       router.refresh();
@@ -51,111 +55,81 @@ const UserDropdown = ({ user }: IUserDropdownProps) => {
   const firstLetter = user.name?.charAt(0).toUpperCase() || "U";
 
   return (
-    <DropdownMenu>
-      {/* PROFILE BUTTON */}
-      <DropdownMenuTrigger >
-        <button className="flex items-center gap-2 rounded-full border border-[#E5D3C0] bg-[#FFFCF7] p-1.5 pr-3 transition hover:bg-[#F3E7D8] focus:outline-none dark:border-[#514034] dark:bg-[#30251F] dark:hover:bg-[#4A362A]">
-          {/* PROFILE IMAGE OR INITIAL */}
-          {user.image ? (
-            <img
-              src={user.image}
-              alt={user.name}
-              className="h-9 w-9 rounded-full object-cover"
-            />
-          ) : (
-            <div className="flex h-9 w-9 items-center justify-center rounded-full bg-[#F3E7D8] font-bold text-[#4A291B] dark:bg-[#4A362A] dark:text-[#F3E7D8]">
-              {firstLetter}
-            </div>
-          )}
-
-          <span className="hidden text-sm font-bold text-[#4A291B] dark:text-[#F3E7D8] sm:block">
-            {user.name}
-          </span>
-
-          <ChevronDown
-            size={15}
-            className="text-[#78675B] dark:text-[#C6B4A4]"
-          />
-        </button>
-      </DropdownMenuTrigger>
-
-      {/* DROPDOWN CONTENT */}
-      <DropdownMenuContent
-        align="end"
-        className="w-64 rounded-xl border-[#E5D3C0] bg-[#FFFCF7] p-2 text-[#4A291B] dark:border-[#514034] dark:bg-[#30251F] dark:text-[#F3E7D8]"
+    <div className="relative" ref={dropdownRef}>
+      {/* Trigger Button */}
+      <button
+        onClick={() => setIsOpen(!isOpen)}
+        className="flex items-center gap-2 rounded-full border border-[#E5D3C0] bg-[#FFFCF7] p-1.5 pr-3 transition hover:bg-[#F3E7D8] focus:outline-none dark:border-[#514034] dark:bg-[#30251F] dark:hover:bg-[#4A362A]"
       >
-        {/* USER INFORMATION */}
-        <DropdownMenuLabel className="px-3 py-3">
-          <div className="flex flex-col gap-1">
-            <span className="text-sm font-bold text-[#4A291B] dark:text-[#F3E7D8]">
-              {user.name}
-            </span>
-
-            <span className="text-xs font-normal text-[#78675B] dark:text-[#C6B4A4]">
-              {user.email}
-            </span>
+        {user.image ? (
+          <img src={user.image} alt={user.name} className="h-9 w-9 rounded-full object-cover" />
+        ) : (
+          <div className="flex h-9 w-9 items-center justify-center rounded-full bg-[#F3E7D8] font-bold text-[#4A291B] dark:bg-[#4A362A] dark:text-[#F3E7D8]">
+            {firstLetter}
           </div>
-        </DropdownMenuLabel>
+        )}
+        <span className="hidden text-sm font-bold text-[#4A291B] dark:text-[#F3E7D8] sm:block">
+          {user.name}
+        </span>
+        <ChevronDown size={15} className={`text-[#78675B] transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`} />
+      </button>
 
-        <DropdownMenuSeparator className="bg-[#E5D3C0] dark:bg-[#514034]" />
+      {/* Dropdown Menu Content */}
+      {isOpen && (
+        <div className="absolute right-0 mt-2 w-64 rounded-2xl border border-[#E5D3C0] bg-[#FFFCF7] p-2 shadow-lg text-[#4A291B] dark:border-[#514034] dark:bg-[#30251F] dark:text-[#F3E7D8] z-50">
+          
+          {/* User Info Header */}
+          <div className="px-3 py-3 border-b border-[#E5D3C0] dark:border-[#514034]">
+            <p className="text-sm font-bold text-[#4A291B] dark:text-[#F3E7D8]">{user.name}</p>
+            <p className="text-xs text-[#78675B] dark:text-[#C6B4A4] truncate">{user.email}</p>
+          </div>
 
-        {/* DASHBOARD */}
-        <DropdownMenuItem >
-          <Link
-            href="/dashboard"
-            className="flex cursor-pointer items-center gap-3 rounded-lg px-3 py-2 text-sm text-[#4A291B] hover:bg-[#F3E7D8] dark:text-[#F3E7D8] dark:hover:bg-[#4A362A]"
+          {/* Links */}
+          <div className="py-2 space-y-1">
+            <Link
+              href = "/"
+              onClick={() => setIsOpen(false)}
+              className="flex items-center gap-3 rounded-xl px-3 py-2 text-sm font-medium hover:bg-[#F3E7D8] dark:hover:bg-[#4A362A]"
+            >
+              <LayoutDashboard size={17} /> Dashboard
+            </Link>
+            <Link
+              href="/add-studio"
+              onClick={() => setIsOpen(false)}
+              className="flex items-center gap-3 rounded-xl px-3 py-2 text-sm font-medium hover:bg-[#F3E7D8] dark:hover:bg-[#4A362A]"
+            >
+              <PlusCircle size={17} /> Add New Studio
+            </Link>
+            <Link
+              href="/my-listings"
+              onClick={() => setIsOpen(false)}
+              className="flex items-center gap-3 rounded-xl px-3 py-2 text-sm font-medium hover:bg-[#F3E7D8] dark:hover:bg-[#4A362A]"
+            >
+              <Building2 size={17} /> My Studio Listings
+            </Link>
+            <Link
+              href="/my-booking"
+              onClick={() => setIsOpen(false)}
+              className="flex items-center gap-3 rounded-xl px-3 py-2 text-sm font-medium hover:bg-[#F3E7D8] dark:hover:bg-[#4A362A]"
+            >
+              <CalendarDays size={17} /> My Bookings
+            </Link>
+          </div>
+
+          <div className="my-1 border-t border-[#E5D3C0] dark:border-[#514034]" />
+
+          {/* Logout Button */}
+          <button
+            onClick={() => {
+              setIsOpen(false);
+              handleLogout();
+            }}
+            className="flex w-full items-center gap-3 rounded-xl px-3 py-2 text-sm font-semibold text-red-700 hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-950"
           >
-            <LayoutDashboard size={17} />
-            Dashboard
-          </Link>
-        </DropdownMenuItem>
-
-        {/* ADD NEW STUDIO */}
-        <DropdownMenuItem >
-          <Link
-            href="/add-studio"
-            className="flex cursor-pointer items-center gap-3 rounded-lg px-3 py-2 text-sm text-[#4A291B] hover:bg-[#F3E7D8] dark:text-[#F3E7D8] dark:hover:bg-[#4A362A]"
-          >
-            <PlusCircle size={17} />
-            Add New Studio
-          </Link>
-        </DropdownMenuItem>
-
-        {/* MY LISTINGS */}
-        <DropdownMenuItem >
-          <Link
-            href="/my-listings"
-            className="flex cursor-pointer items-center gap-3 rounded-lg px-3 py-2 text-sm text-[#4A291B] hover:bg-[#F3E7D8] dark:text-[#F3E7D8] dark:hover:bg-[#4A362A]"
-          >
-            <Building2 size={17} />
-            My Studio Listings
-          </Link>
-        </DropdownMenuItem>
-
-        {/* MY BOOKINGS */}
-        <DropdownMenuItem >
-          <Link
-            href="/my-bookings"
-            className="flex cursor-pointer items-center gap-3 rounded-lg px-3 py-2 text-sm text-[#4A291B] hover:bg-[#F3E7D8] dark:text-[#F3E7D8] dark:hover:bg-[#4A362A]"
-          >
-            <CalendarDays size={17} />
-            My Bookings
-          </Link>
-        </DropdownMenuItem>
-
-        <DropdownMenuSeparator className="bg-[#E5D3C0] dark:bg-[#514034]" />
-
-        {/* LOGOUT */}
-        <DropdownMenuItem
-          onClick={handleLogout}
-          className="cursor-pointer gap-3 rounded-lg px-3 py-2 text-sm font-semibold text-red-700 focus:bg-red-50 focus:text-red-700 dark:text-red-400 dark:focus:bg-red-950 dark:focus:text-red-300"
-        >
-          <LogOut size={17} />
-          Logout
-        </DropdownMenuItem>
-      </DropdownMenuContent>
-    </DropdownMenu>
+            <LogOut size={17} /> Logout
+          </button>
+        </div>
+      )}
+    </div>
   );
-};
-
-export default UserDropdown;
+}
