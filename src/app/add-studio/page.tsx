@@ -137,32 +137,7 @@ export default function AddStudioPage() {
 
   return (
     <main className="min-h-screen bg-[#FBF6EE] dark:bg-[#211A16]">
-      {/* Navbar */}
-      <header className="sticky top-0 z-40 border-b border-[#E5D3C0] bg-[#FBF6EE]/95 backdrop-blur-md dark:border-[#514034] dark:bg-[#211A16]/95">
-        <nav className="mx-auto flex max-w-7xl items-center justify-between px-5 py-4 lg:px-8">
-          <Link href="/" className="flex items-center gap-2 text-[#4A291B] dark:text-[#F3E7D8]">
-            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#F3E7D8] dark:bg-[#4A362A]">
-              <Camera size={25} />
-            </div>
-            <span className="brand-font text-2xl font-bold">StudioSpace</span>
-          </Link>
-          <div className="hidden items-center gap-7 text-sm font-semibold text-[#78675B] dark:text-[#C6B4A4] md:flex">
-            <Link href="/" className="transition hover:text-[#4A291B] dark:hover:text-[#F3E7D8]">
-              Home
-            </Link>
-            <Link href="/studios" className="transition hover:text-[#4A291B] dark:hover:text-[#F3E7D8]">
-              Explore Studios
-            </Link>
-            <Link
-              href="/my-listings"
-              className="text-[#4A291B] underline decoration-2 underline-offset-8 dark:text-[#F3E7D8]"
-            >
-              My Listings
-            </Link>
-          </div>
-        </nav>
-      </header>
-
+    
       {/* Page heading */}
       <section className="px-4 pb-5 pt-10 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-5xl">

@@ -1,6 +1,6 @@
 export default function HowBookingWorks() {
   return (
-    <section className="border-y border-[#E5D3C0] bg-[#FFFCF7] py-16 dark:border-[#514034] dark:bg-[#211A16]">
+    <section id="how-it-works" className="scroll-mt-24 border-y border-[#E5D3C0] bg-[#FFFCF7] py-16 dark:border-[#514034] dark:bg-[#211A16]">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="mb-12 text-center">
           <h2 className="brand-font text-3xl font-bold text-[#4A291B] dark:text-[#F3E7D8]">

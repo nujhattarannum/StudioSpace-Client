@@ -21,9 +21,9 @@ export default function FeaturedStudios() {
   useEffect(() => {
     async function fetchFeatured() {
       try {
-        const res = await fetch("http://localhost:8000/studios");
+        const res = await fetch("http://localhost:8000/featured-studios");
         const data = await res.json();
-        setFeaturedStudios(data.slice(0, 6)); // Limit to 6 studios as required
+        setFeaturedStudios(data); // Limit to 6 studios as required
       } catch (error) {
         console.error("Failed to fetch featured studios:", error);
       } finally {
