@@ -7,15 +7,17 @@ import { headers } from 'next/headers'
 export async function proxy(request: NextRequest) {
     const session = await auth.api.getSession({
         headers:await headers()
+    } )
+    const user = session?.user
+    if(!user){
+      return NextResponse.redirect(new URL('/register', request.url))  
     }
-
-    )
- return NextResponse.redirect(new URL('/', request.url))
+ return NextResponse.next()
 }
 
 // Alternatively, you can use a default export:
 // export default function proxy(request: NextRequest) { ... }
 
 export const config = {
-  matcher: ['/add-studio', '/studios', '/studios/[id]', '/studios/edit/[id]'],
+  matcher: ['/add-studio', '/my-booking', '/my-listings', '/studios/edit/[id]'],
 }

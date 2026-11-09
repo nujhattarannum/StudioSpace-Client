@@ -21,7 +21,7 @@ import { Studio } from "@/types/studio";
 export default function MyListingsPage() {
   const router = useRouter();
   const { data: session, isPending: isAuthPending } = authClient.useSession();
-
+   const user = session?.user;
   const [studios, setStudios] = useState<Studio[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -29,19 +29,15 @@ export default function MyListingsPage() {
 
 useEffect(() => {
   // Fetch listings function placed BEFORE useEffect
-  const fetchMyListings = async (userEmail: string) => {
+  const fetchMyListings = async (userEmail:string) => {
     try {
 
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/studios`);
-      if (!res.ok) throw new Error("Failed to fetch studios");
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/my-listing/${userEmail}`);
+      if (!res.ok) throw new Error("Failed to fetch listings");
 
-      const data: Studio[] = await res.json();
-
-      const userOwnedStudios = data.filter(
-        (studio) => studio.ownerEmail?.toLowerCase() === userEmail.toLowerCase()
-      );
-
-      setStudios(userOwnedStudios);
+      const listedStudios: Studio[] = await res.json();
+      
+      setStudios(listedStudios);
     } catch (error) {
       console.error("Error loading user listings:", error);
       toast.error("Failed to load your listings.");

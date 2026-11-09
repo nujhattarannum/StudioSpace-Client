@@ -37,75 +37,59 @@ export default function UpdateStudioPage() {
   });
 
   // Fetch existing studio information
-  useEffect(() => {
-    if (isAuthPending) return;
+useEffect(() => {
+  if (isAuthPending) return;
 
-    if (!session?.user?.email) {
-      router.replace("/login");
-      return;
-    }
+  if (!session?.user?.email) {
+    router.replace("/login");
+    return;
+  }
 
-    const fetchStudio = async () => {
-      try {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/studios`);
+  const fetchStudio = async () => {
+    try {
+      // Direct request to single studio endpoint with user context
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/studios/${id}`, {
+        headers: {
+          "x-user-email": session.user.email,
+        },
+      });
 
-        if (!res.ok) {
-          throw new Error("Failed to fetch studios");
-        }
+      const data = await res.json();
 
-        const data: Studio[] = await res.json();
-
-        const selectedStudio = data.find(
-          (item) => String(item._id) === id
-        );
-
-        if (!selectedStudio) {
-          toast.error("Studio not found.");
-          router.replace("/my-listings");
-          return;
-        }
-
-        // Check whether the logged-in user owns this studio
-        if (
-          selectedStudio.ownerEmail?.toLowerCase() !==
-          session.user.email.toLowerCase()
-        ) {
-          toast.error("You are not authorized to update this studio.");
-          router.replace("/my-listings");
-          return;
-        }
-
-        setStudio(selectedStudio);
-
-        // Pre-fill the form
-        setFormData({
-          title: selectedStudio.title || "",
-          category: selectedStudio.category || "",
-          hourlyRate: String(selectedStudio.hourlyRate ?? ""),
-          securityDeposit: String(selectedStudio.securityDeposit ?? ""),
-          capacity: String(selectedStudio.capacity ?? ""),
-          location: selectedStudio.location || "",
-          imageUrl: selectedStudio.imageUrl || "",
-          amenities: selectedStudio.amenities?.join(", ") || "",
-          description: selectedStudio.description || "",
-        });
-      } catch (error) {
-        console.error("Error loading studio:", error);
-        toast.error("Failed to load studio details.");
-      } finally {
-        setIsLoading(false);
+      if (!res.ok) {
+        // Handles 404 (Not Found) or 403 (Unauthorized) automatically from server
+        toast.error(data.message || "Failed to load studio.");
+        router.replace("/my-listings");
+        return;
       }
-    };
 
-    fetchStudio();
-  }, [id, session, isAuthPending, router]);
+      setStudio(data);
+
+      // Pre-fill form
+      setFormData({
+        title: data.title || "",
+        category: data.category || "",
+        hourlyRate: String(data.hourlyRate ?? ""),
+        securityDeposit: String(data.securityDeposit ?? ""),
+        capacity: String(data.capacity ?? ""),
+        location: data.location || "",
+        imageUrl: data.imageUrl || "",
+        amenities: data.amenities?.join(", ") || "",
+        description: data.description || "",
+      });
+    } catch (error) {
+      console.error("Error loading studio:", error);
+      toast.error("Failed to load studio details.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  fetchStudio();
+}, [id, session, isAuthPending, router]);
 
   // Handle input changes
-  const handleChange = (
-    e: React.ChangeEvent<
-      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
-    >
-  ) => {
+  const handleChange = (e: React.ChangeEvent< HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement >) => {
     const { name, value } = e.target;
 
     setFormData((prev) => ({
@@ -138,8 +122,7 @@ export default function UpdateStudioPage() {
         description: formData.description,
       };
 
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/studios/${id}`,
+      const res = await fetch(  `${process.env.NEXT_PUBLIC_API_URL}/studios/${id}`,
         {
           method: "PUT",
           headers: {
@@ -274,7 +257,8 @@ export default function UpdateStudioPage() {
                 onChange={handleChange}
                 required
                 placeholder="Enter studio name"
-                className="h-12 border-[#E5D3C0] bg-[#FBF6EE] text-[#2C221E] dark:border-[#514034] dark:bg-[#211A16] dark:text-[#F3E7D8] dark:placeholder:text-[#BDAA99]"
+                className="h-12 border-[#E5D3C0] bg-[#FBF6EE] text-[#2C221E] dark:border-[#514034]
+                 dark:bg-[#211A16] dark:text-[#F3E7D8] dark:placeholder:text-[#BDAA99]"
               />
             </div>
 

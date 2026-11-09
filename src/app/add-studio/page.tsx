@@ -19,6 +19,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { authClient } from "@/lib/auth-client";
 
 const categories = [
   "Photo Studio",
@@ -51,10 +52,8 @@ export default function AddStudioPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Read-only user details as required by the assignment
-  const user = {
-    name: "Nujhat Tasnim",
-    email: "nujhat@studiospace.com",
-  };
+    const { data: session, isPending: sessionLoading } = authClient.useSession();
+    const user = session?.user;
 
   function toggleAmenity(amenity: string) {
     setSelectedAmenities((current) =>
@@ -79,8 +78,8 @@ export default function AddStudioPage() {
       imageUrl: String(formData.get("imageUrl") ?? "").trim(),
       amenities: selectedAmenities,
       description: String(formData.get("description") ?? "").trim(),
-      ownerName: user.name,
-      ownerEmail: user.email,
+      ownerName: user?.name,
+      ownerEmail: user?.email,
     };
 
     if ( !studio.title || !studio.category ||  !studio.location ||  !studio.description
@@ -188,7 +187,7 @@ export default function AddStudioPage() {
                     Host Name
                   </label>
                   <Input
-                    value={user.name}
+                    value={user?.name}
                     readOnly
                     className="h-12 cursor-not-allowed rounded-xl border-[#E5D3C0] bg-[#EEDCC7] text-[#655348] dark:border-[#514034] dark:bg-[#4A362A] dark:text-[#C6B4A4]"
                   />
@@ -198,7 +197,7 @@ export default function AddStudioPage() {
                     Host Email
                   </label>
                   <Input
-                    value={user.email}
+                    value={user?.email}
                     readOnly
                     className="h-12 cursor-not-allowed rounded-xl border-[#E5D3C0] bg-[#EEDCC7] text-[#655348] dark:border-[#514034] dark:bg-[#4A362A] dark:text-[#C6B4A4]"
                   />
