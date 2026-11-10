@@ -1,16 +1,10 @@
 
 "use client";
 
-import { useState } from "react";
 import Link from "next/link";
 
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-
 import {
-  ArrowRight,
   Camera,
-  Mail,
 } from "lucide-react";
 
 import {
@@ -43,23 +37,12 @@ const categoryLinks = [
 ];
 
 export default function Footer() {
-  const [email, setEmail] = useState("");
-
-  function handleSubscribe(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-
-    // Connect your newsletter API here.
-    console.log("Newsletter email:", email);
-
-    setEmail("");
-  }
-
   return (
     <footer className="bg-[#2C221E] text-[#FBF6EE] dark:bg-[#17120F] dark:text-[#F3E7D8]">
 
       <div className="mx-auto max-w-7xl px-5 py-12 sm:px-8 lg:py-16">
 
-        <div className="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-5 lg:gap-8">
+        <div className="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-4 lg:gap-8">
 
           {/* Branding */}
           <div>
@@ -179,51 +162,6 @@ export default function Footer() {
                 </li>
               ))}
             </ul>
-          </div>
-
-          {/* Newsletter */}
-          <div>
-            <h3 className="brand-font text-xl font-semibold">
-              Stay Updated
-            </h3>
-
-            <p className="mt-4 leading-6 text-[#D8C7B6] dark:text-[#C6B4A4]">
-              Discover inspiring spaces, new studios,
-              and creative opportunities.
-            </p>
-
-            <form
-              onSubmit={handleSubscribe}
-              className="mt-5 space-y-3"
-            >
-              <div className="relative">
-
-                <Mail
-                  size={17}
-                  className="absolute left-3 top-1/2 -translate-y-1/2 text-[#78675B] dark:text-[#C6B4A4]"
-                />
-
-                <Input
-                  type="email"
-                  required
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="Your email address"
-                  aria-label="Your email address"
-                  className="h-12 rounded-xl border-[#8C7665] bg-[#FBF6EE] pl-10 text-[#2C221E] placeholder:text-[#8C7665] dark:border-[#665247] dark:bg-[#30251F] dark:text-[#F3E7D8] dark:placeholder:text-[#BDAA99]"
-                />
-
-              </div>
-
-              <Button
-                type="submit"
-                className="h-11 w-full rounded-xl bg-[#F3E7D8] font-bold text-[#4A291B] hover:bg-[#E5D3C0] dark:bg-[#4A362A] dark:text-[#F3E7D8] dark:hover:bg-[#665247]"
-              >
-                Subscribe
-                <ArrowRight size={17} className="ml-2" />
-              </Button>
-
-            </form>
           </div>
 
         </div>

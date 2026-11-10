@@ -20,6 +20,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { authClient } from "@/lib/auth-client";
+import { getTokenFromClient } from "@/lib/getTokenFromClient";
 
 const categories = [
   "Photo Studio",
@@ -107,12 +108,13 @@ export default function AddStudioPage() {
     }
 
     setIsSubmitting(true);
-
+  const token = await getTokenFromClient()
     try {
-      const res = await fetch('${process.env.NEXT_PUBLIC_API_URL}/add-studio', {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/add-studio`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          authorization : `Bearer ${token}`
         },
         body: JSON.stringify(studio),
       });

@@ -1,17 +1,11 @@
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "@/components/ui/alert-dialog"
+"use client";
+
 import { Button } from "@/components/ui/button";
-import { useRouter } from "next/router";
-import React from 'react';
+import { useRouter } from "next/navigation";
+import React, { useState } from "react";
 import { toast } from "react-toastify";
+import { Loader2 } from "lucide-react";
+import { getTokenFromClient } from "@/lib/getTokenFromClient";
 
 interface Studio {
   _id: string;
@@ -23,57 +17,65 @@ interface Studio {
   ownerEmail?: string;
 }
 
-interface IStudioProps{
-      selectedStudio: Studio;
+interface IStudioProps {
+  selectedStudio: Studio;
 }
-const DeleteStudioDialog = ({selectedStudio}:IStudioProps) => {
-      const router = useRouter();
-     const handleDeleteStudio = async () => {
 
+const DeleteStudioDialog = ({ selectedStudio }: IStudioProps) => {
+  const router = useRouter();
+  const [isDeleting, setIsDeleting] = useState(false);
+
+  const handleDeleteStudio = async () => {
+    // Standard browser confirmation dialog
+    const confirmed = window.confirm(
+      `Are you sure you want to delete "${selectedStudio.title}"? This action cannot be undone.`
+    );
+
+    if (!confirmed) return;
+
+    setIsDeleting(true);
+
+    const token = await  getTokenFromClient()
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/my-listings/${selectedStudio._id}`, {
-        method: "DELETE",
-      });
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/my-listings/${selectedStudio._id}`,
+        {
+          method: "DELETE",
+          headers:{
+            authorization : `Bearer ${token}`
+          }       
+        }  );
 
       if (!res.ok) {
         throw new Error("Failed to delete space.");
       }
 
       toast.success(`"${selectedStudio.title}" removed successfully!`);
-       router.push("/my-listings");
-
+      router.refresh(); // Refreshes the listings page data
     } catch (error) {
       console.error(error);
       toast.error("Could not delete listing. Please try again.");
-    } 
+    } finally {
+      setIsDeleting(false);
+    }
   };
-    return (
-        <div>
-            <AlertDialogTrigger>
+
+  return (
     <Button
-            type="button"
-            variant="outline"
-            className="rounded-xl border-[#E5D3C0] text-xs font-bold text-[#4A291B] hover:bg-[#F3E7D8]"
-          >
-            Delete
-          </Button>
-  <AlertDialog>
-    <AlertDialogHeader>
-      <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-      <AlertDialogDescription>
-        This action cannot be undone. This will permanently delete your account
-        from our servers.
-      </AlertDialogDescription>
-    </AlertDialogHeader>
-    <AlertDialogFooter>
-      <AlertDialogCancel>
-      </AlertDialogCancel>
-      <AlertDialogAction>Continue</AlertDialogAction>
-    </AlertDialogFooter>
-  </AlertDialog>
-</AlertDialogTrigger>
-        </div>
-    );
+      type="button"
+      variant="outline"
+      disabled={isDeleting}
+      onClick={handleDeleteStudio}
+      className="rounded-xl border-[#E5D3C0] text-xs font-bold text-[#4A291B] hover:bg-[#F3E7D8] dark:border-[#665247] dark:bg-[#30251F] dark:text-[#F3E7D8] dark:hover:bg-[#4A362A]"
+    >
+      {isDeleting ? (
+        <>
+          <Loader2 size={14} className="mr-1 animate-spin" /> Deleting...
+        </>
+      ) : (
+        "Delete"
+      )}
+    </Button>
+  );
 };
 
 export default DeleteStudioDialog;

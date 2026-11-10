@@ -56,7 +56,7 @@ const BookingCard = ({studio}:StudioProps) => {
         guest: guestsCount,
       };
       console.log("📤 Sending Booking Data to Backend:", bookingData);
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/booking`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/booking-request`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json", // Fixed header syntax

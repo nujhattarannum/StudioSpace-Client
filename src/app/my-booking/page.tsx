@@ -16,23 +16,6 @@ import { authClient } from "@/lib/auth-client";
 import { toast } from "react-toastify";
 import { redirect } from "next/navigation";
 
-interface Booking {
-  _id: string;
-  studioId: string;
-  studioTitle: string;
-  category?: string;
-  location: string;
-  studioImage: string;
-  bookedDate: string;
-  Time: string;
-  duration?: number;
-  hourlyRate: number;
-  totalPrice?: number;
-  status?: "Confirmed" | "Pending" | "Completed" | "Cancelled";
-  hostEmail?: string;
-  guest: number;
-  email: string;
-}
 
 type BookingFilter = "All" | "Upcoming" | "Past";
 
@@ -49,16 +32,20 @@ export default function MyBookingsPage() {
    useEffect(() => {
   async function fetchUserBookings() {
     try {
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/my-booking/${user?.email}`
-      );
-
-      if (!res.ok) {
-        throw new Error("Failed to fetch bookings");
-      }
-
-      const data = await res.json();
-      setBookings(data);
+      authClient
+      .token()
+      .then(({data , error:tokenError}) =>{
+        if(tokenError) throw tokenError;
+        return fetch(
+          `${process.env.NEXT_PUBLIC_API_URL}/my-booking/${user?.email}`,
+          { headers: { Authorization : `Bearer ${data.token}`}},
+        );
+      })
+     .then((res) =>{
+      if (!res.ok) throw new Error("Failed to fetch bookings");
+      return res.json()
+     })
+       .then((data)=> setBookings(data))
     } catch (error) {
       console.error("Error fetching bookings:", error);
     } finally {
@@ -128,8 +115,7 @@ export default function MyBookingsPage() {
   );
 
   // Display bookings according to selected tab
-  const filteredBookings =
-    activeFilter === "Upcoming"
+  const filteredBookings =  activeFilter === "Upcoming"
       ? upcomingBookings
       : activeFilter === "Past"
         ? pastBookings

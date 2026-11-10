@@ -34,11 +34,7 @@ export default function ExploreStudiosPage() {
     async function fetchStudios() {
       setIsLoading(true);
       try {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/studios`,{
-          headers:{
-            authorization :'user logged in'
-          }
-        });
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/studios` );
         if (!res.ok) {
           throw new Error("Failed to fetch studios");
         }

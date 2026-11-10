@@ -56,7 +56,7 @@ export default function LoginPage() {
     try {
       await authClient.signIn.social({
         provider: provider,
-        callbackURL: "/", // Navigate user to Home page after social login
+        callbackURL: "http://localhost:3000", // Navigate user to Home page after social login
       });
     } catch (err) {
       console.error(err);

@@ -1,8 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname , useRouter } from "next/navigation";
 import { useTheme } from "next-themes";
 import UserDropdown from "@/components/UserDropdown";
 import { authClient } from "@/lib/auth-client";
@@ -24,13 +24,39 @@ const navLinks = [
   { name: "About Us", href: "/about" },
 ];
 
-export default function Navbar() {
+export default  function Navbar() {
   const pathname = usePathname();
-
+  const router = useRouter();
+useEffect(() => {
+  const load = async () => {
+    const { data } = await authClient.token();
+    console.log(data)
+    console.log('nujhat')
+  };
+  load();
+}, []);
   const [menuOpen, setMenuOpen] = useState(false);
   const { theme, setTheme } = useTheme();
   const { data: session, isPending } = authClient.useSession();
 
+  // Handler for smooth scrolling or cross-page hash routing
+  const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+    if (href.startsWith("/#")) {
+      const targetId = href.substring(2); // extracts "how-it-works"
+
+      // If we are already on the homepage ("/")
+      if (pathname === "/") {
+        e.preventDefault();
+        const element = document.getElementById(targetId);
+        if (element) {
+          element.scrollIntoView({ behavior: "smooth" });
+        }
+      } else {
+        // If coming from another page, let router push to homepage with hash
+        router.push(href);
+      }
+    }
+  };
   return (
     <header className="sticky top-0 z-50 border-b border-[#E5D3C0] bg-[#FBF6EE]/95 backdrop-blur-md dark:border-[#514034] dark:bg-[#211A16]/95">
       <nav className="mx-auto flex max-w-7xl items-center justify-between px-5 py-4 lg:px-8">
@@ -64,17 +90,19 @@ export default function Navbar() {
                   : false;
 
             return (
-              <Link
-                key={link.name}
-                href={link.href}
-                className={`relative py-2 font-semibold transition-colors ${
-                  active
-                    ? "text-[#4A291B] after:absolute after:bottom-0 after:left-0 after:h-[3px] after:w-full after:rounded-full after:bg-[#4A291B] dark:text-[#F3E7D8] dark:after:bg-[#F3E7D8]"
-                    : "text-[#78675B] hover:text-[#4A291B] dark:text-[#BDAA99] dark:hover:text-[#F3E7D8]"
-                }`}
-              >
-                {link.name}
-              </Link>
+             <Link
+  key={link.name}
+  href={link.href}
+  onClick={(e) => {
+    // Check if the link contains a hash right here directly
+    if (link.href.includes("#")) {
+      handleNavClick(e, link.href);
+    }
+  }}
+  className={`...`}
+>
+  {link.name}
+</Link>
             );
           })}
         </div>

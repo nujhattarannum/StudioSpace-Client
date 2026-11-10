@@ -13,6 +13,7 @@ import { Studio } from "@/types/studio";
 import { imageConfigDefault } from "next/dist/shared/lib/image-config";
 import BookingCard from "@/components/BookingCard";
 import { auth } from "@/lib/auth";
+import { getTokenFromClient } from "@/lib/getTokenFromClient";
 
 
 
@@ -23,11 +24,16 @@ export default function StudioDetailsPage({ params,}: { params: Promise<{ id: st
 
   const [studio, setStudio] = useState<Studio | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [isSaved, setIsSaved] = useState(false);
 
-  useEffect(() => { async function fetchStudioDetails() {
+  useEffect(() => { 
+    async function fetchStudioDetails() {
+        const token = await  getTokenFromClient()
       try {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/studios/${studioId}`);
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/studios/${studioId}`,{
+           headers: {
+           authorization : `Bearer ${token}`
+        },
+        });
         if (!res.ok) {
           throw new Error("Studio not found");
         }
@@ -42,11 +48,6 @@ export default function StudioDetailsPage({ params,}: { params: Promise<{ id: st
     fetchStudioDetails();
   }, [studioId]);
 
-
-  const toggleSave = () => {
-    setIsSaved(!isSaved);
-    toast.info(isSaved ? "Removed from wishlist" : "Saved to wishlist!");
-  };
 
   if (isLoading) {
     return (
@@ -94,31 +95,6 @@ export default function StudioDetailsPage({ params,}: { params: Promise<{ id: st
             </span>
           </div>
 
-          <div className="flex items-center gap-3">
-            <Button
-              variant="outline"
-              onClick={() => {
-                navigator.clipboard.writeText(window.location.href);
-                toast.success("Link copied to clipboard!");
-              }}
-              className="h-10 rounded-full border-[#E5D3C0] bg-[#FFFCF7] px-4 text-xs font-bold text-[#4A291B] hover:bg-[#F3E7D8]">
-              <Share2 size={14} className="mr-2" /> Share
-            </Button>
-            <Button
-              variant="outline"
-              onClick={toggleSave}
-              className={`h-10 rounded-full border-[#E5D3C0] px-4 text-xs font-bold transition ${
-                isSaved
-                  ? "bg-[#4A291B] text-white"
-                  : "bg-[#FFFCF7] text-[#4A291B] hover:bg-[#F3E7D8]"
-              }`} >
-              <Heart
-                size={14}
-                className={`mr-2 ${isSaved ? "fill-white text-white" : ""}`}
-              />
-              {isSaved ? "Saved" : "Save"}
-            </Button>
-          </div>
         </div>
 
         {/* Studio Title & Rating Header */}

@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { authClient } from "@/lib/auth-client";
 import { Studio } from "@/types/studio";
+import { getTokenFromClient } from "@/lib/getTokenFromClient";
 
 export default function UpdateStudioPage() {
   const router = useRouter();
@@ -35,7 +36,7 @@ export default function UpdateStudioPage() {
     amenities: "",
     description: "",
   });
-
+ 
   // Fetch existing studio information
 useEffect(() => {
   if (isAuthPending) return;
@@ -44,13 +45,17 @@ useEffect(() => {
     router.replace("/login");
     return;
   }
-
+ 
   const fetchStudio = async () => {
+
+     const token = await  getTokenFromClient()
     try {
       // Direct request to single studio endpoint with user context
       const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/studios/${id}`, {
         headers: {
           "x-user-email": session.user.email,
+         
+           authorization : `Bearer ${token}`
         },
       });
 
