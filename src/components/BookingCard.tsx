@@ -67,22 +67,22 @@ const BookingCard = ({studio}:StudioProps) => {
         },
         body: JSON.stringify(bookingData),
       });
-
+     const data = await res.json();
       if (!res.ok) {
-        throw new Error("Failed to save booking to database");
+        throw new Error(data.error );
       }
 
-      const result = await res.json();
-      console.log("Booking saved:", result);
+      console.log("Booking saved:",data);
 
       toast.success("Workspace booking request submitted successfully!");
       
       // Optional: Clear form or redirect
-      // router.push("/my-bookings");
+      // router.push("/my-bookings");what is wrong
+
       
     } catch (err) {
       console.error(err);
-      toast.error("Failed to book workspace. Please try again.");
+      toast.error((err as Error).message || "Something went wrong");
     } finally {
       setIsBooking(false);
     }};
