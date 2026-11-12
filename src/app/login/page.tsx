@@ -51,19 +51,19 @@ export default function LoginPage() {
     }
   };
 
-  const handleSocialLogin = async (provider: "google") => {
-    setIsSocialLoading(provider);
-    try {
-      await authClient.signIn.social({
-        provider: provider,
-        callbackURL: "http://localhost:3000", // Navigate user to Home page after social login
-      });
-    } catch (err) {
-      console.error(err);
-      toast.error(`Failed to sign in with ${provider}`);
-      setIsSocialLoading(null);
-    }
-  };
+const handleSocialLogin = async (provider: "google") => {
+  setIsSocialLoading(provider);
+  try {
+    await authClient.signIn.social({
+      provider: provider,
+      callbackURL: process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000",
+    });
+  } catch (err) {
+    console.error(err);
+    toast.error(`Failed to sign in with ${provider}`);
+    setIsSocialLoading(null);
+  }
+};
 
   return (
     <main className="flex min-h-screen items-center justify-center bg-[#FBF6EE] px-4 py-12 dark:bg-[#211A16]">

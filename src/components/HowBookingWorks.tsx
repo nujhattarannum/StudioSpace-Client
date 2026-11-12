@@ -26,8 +26,8 @@ export default function HowBookingWorks() {
               <div className="mx-auto mb-4 flex h-10 w-10 items-center justify-center rounded-full bg-[#4A291B] font-bold text-white dark:bg-[#F3E7D8] dark:text-[#2C221E]">
                 {item.step}
               </div>
-              <h3 className="brand-font font-bold text-[#4A291B] dark:text-[#F3E7D8]">{item.title}</h3>
-              <p className="mt-1 text-xs text-[#78675B] dark:text-[#C6B4A4]">{item.desc}</p>
+              <h3 className="brand-font text-lg  font-extrabold text-[#4A291B] dark:text-[#F3E7D8]">{item.title}</h3>
+              <p className="mt-1 text-sm text-[#78675B] dark:text-[#C6B4A4]">{item.desc}</p>
             </div>
           ))}
         </div>

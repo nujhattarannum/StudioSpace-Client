@@ -2,6 +2,10 @@ import Link from "next/link";
 import { MapPin, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
+interface Review {
+  rating?: number;
+}
+
 interface StudioCardProps {
   id: string;
   title: string;
@@ -11,6 +15,7 @@ interface StudioCardProps {
   imageUrl: string;
   rating?: number;
   reviewsCount?: number;
+  reviews?: Review[];
 }
 
 export default function StudioCard({
@@ -20,10 +25,20 @@ export default function StudioCard({
   hourlyRate,
   location,
   imageUrl,
-  rating = 4.9,
-  reviewsCount = 120,}: StudioCardProps) {
+  rating: propRating,
+  reviewsCount: propReviewsCount,
+  reviews = [],
+}: StudioCardProps) {
+  // Calculate real ratings and count if reviews array is provided
+  const hasReviews = reviews && reviews.length > 0;
+  const reviewCount = hasReviews ? reviews.length : (propReviewsCount ?? 0);
+  
+  const averageRating = hasReviews
+    ? (reviews.reduce((sum, r) => sum + (r.rating || 0), 0) / reviews.length).toFixed(1)
+    : (propRating !== undefined ? propRating : null);
+
   return (
-    <div className="group flex flex-col overflow-hidden rounded-3xl border border-[#E5D3C0] bg-[#FFFCF7] transition-all duration-300 hover:-translate-y-1 hover:shadow-lg dark:border-[#514034] dark:bg-[#30251F]">
+    <div className="group flex flex-col overflow-hidden rounded-3xl border border-[#4A362A] bg-[#FFFCF7] transition-all duration-300 hover:-translate-y-1 hover:shadow-lg dark:border-[#30251F] dark:bg-[#4A362A]">
       {/* Image & Category Badge */}
       <div className="relative h-48 w-full overflow-hidden bg-[#F3E7D8] dark:bg-[#4A362A]">
         {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -51,7 +66,13 @@ export default function StudioCard({
             </span>
             <span className="flex items-center gap-1 rounded-md bg-[#F3E7D8] px-2 py-0.5 font-bold text-[#4A291B] dark:bg-[#4A362A] dark:text-[#F3E7D8]">
               <Star size={12} className="fill-[#4A291B] text-[#4A291B] dark:fill-[#F3E7D8] dark:text-[#F3E7D8]" />
-              {rating} <span className="text-[10px] text-[#78675B] dark:text-[#C6B4A4]">({reviewsCount})</span>
+              {reviewCount > 0 && averageRating !== null ? (
+                <>
+                  {averageRating} <span className="text-[10px] text-[#78675B] dark:text-[#C6B4A4]">({reviewCount})</span>
+                </>
+              ) : (
+                <span className="text-[10px] font-medium text-[#78675B] dark:text-[#C6B4A4]">No ratings yet</span>
+              )}
             </span>
           </div>
 

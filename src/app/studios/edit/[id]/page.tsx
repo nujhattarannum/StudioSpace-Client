@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useEffect, useState } from "react";
@@ -33,6 +32,7 @@ export default function UpdateStudioPage() {
     capacity: "",
     location: "",
     imageUrl: "",
+    extraImages: "",
     amenities: "",
     description: "",
   });
@@ -67,9 +67,7 @@ useEffect(() => {
         router.replace("/my-listings");
         return;
       }
-
       setStudio(data);
-
       // Pre-fill form
       setFormData({
         title: data.title || "",
@@ -78,7 +76,8 @@ useEffect(() => {
         securityDeposit: String(data.securityDeposit ?? ""),
         capacity: String(data.capacity ?? ""),
         location: data.location || "",
-        imageUrl: data.imageUrl || "",
+        imageUrl: data.imageUrl || data.images?.[0] || "",
+        extraImages: data.images ? data.images.slice(1).join(", ") : "",
         amenities: data.amenities?.join(", ") || "",
         description: data.description || "",
       });
@@ -112,6 +111,11 @@ useEffect(() => {
     try {
       setIsSubmitting(true);
 
+      const parsedExtraImages = formData.extraImages
+        .split(",")
+        .map((url) => url.trim())
+        .filter((url) => url !== "");
+
       const updatedStudio = {
         title: formData.title,
         category: formData.category,
@@ -120,18 +124,20 @@ useEffect(() => {
         capacity: Number(formData.capacity),
         location: formData.location,
         imageUrl: formData.imageUrl,
+        images: [formData.imageUrl.trim(), ...parsedExtraImages].filter(Boolean),
         amenities: formData.amenities
           .split(",")
           .map((item) => item.trim())
           .filter((item) => item !== ""),
         description: formData.description,
       };
-
-      const res = await fetch(  `${process.env.NEXT_PUBLIC_API_URL}/studios/${id}`,
+           const token = await  getTokenFromClient()
+      const res = await fetch(  `${process.env.NEXT_PUBLIC_API_URL}/studios/${id}/update`,
         {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
+            authorization : `Bearer ${token}`
           },
           body: JSON.stringify(updatedStudio),
         }
@@ -382,6 +388,47 @@ useEffect(() => {
                     alt="Studio preview"
                     className="h-56 w-full object-cover"
                   />
+                </div>
+              )}
+            </div>
+
+            {/* Extra Photos */}
+            <div>
+              <label className="mb-2 block text-sm font-semibold text-[#4A291B] dark:text-[#F3E7D8]">
+                Extra Studio Photos (Optional)
+              </label>
+
+              <textarea
+                name="extraImages"
+                value={formData.extraImages}
+                onChange={handleChange}
+                rows={3}
+                placeholder="https://example.com/photo-2.jpg, https://example.com/photo-3.jpg"
+                className="w-full rounded-xl border border-[#E5D3C0] bg-[#FBF6EE] p-3 text-sm text-[#2C221E] outline-none focus:ring-2 focus:ring-[#8A796B] dark:border-[#514034] dark:bg-[#211A16] dark:text-[#F3E7D8] dark:placeholder:text-[#BDAA99] dark:focus:ring-[#BDAA99]"
+              />
+
+              <p className="mt-2 text-xs text-[#8A796B] dark:text-[#C6B4A4]">
+                Separate multiple image URLs with a comma.
+              </p>
+
+              {formData.extraImages.trim() && (
+                <div className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-3">
+                  {formData.extraImages
+                    .split(",")
+                    .map((url) => url.trim())
+                    .filter(Boolean)
+                    .map((url, idx) => (
+                      <div
+                        key={idx}
+                        className="overflow-hidden rounded-xl border border-[#E5D3C0] dark:border-[#514034]"
+                      >
+                        <img
+                          src={url}
+                          alt={`Extra studio preview ${idx + 1}`}
+                          className="h-28 w-full object-cover"
+                        />
+                      </div>
+                    ))}
                 </div>
               )}
             </div>

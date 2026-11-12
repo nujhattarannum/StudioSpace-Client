@@ -7,7 +7,7 @@ export default function HostGuarantee() {
         <h2 className="brand-font text-3xl font-bold text-[#4A291B] dark:text-[#F3E7D8]">
           Host Guarantee & Creator Support
         </h2>
-        <p className="mt-1 text-sm text-[#78675B] dark:text-[#C6B4A4]">
+        <p className="mt-1 text-md text-[#78675B] dark:text-[#C6B4A4]">
           Safety, verification, and dedicated support for every booking.
         </p>
       </div>
@@ -29,8 +29,8 @@ export default function HostGuarantee() {
                 <Icon size={24} />
               </div>
               <div>
-                <h4 className="font-bold text-[#4A291B] dark:text-[#F3E7D8]">{feature.title}</h4>
-                <p className="text-xs text-[#78675B] dark:text-[#C6B4A4]">{feature.desc}</p>
+                <h4 className="font-extrabold text-lg text-[#4A291B] dark:text-[#F3E7D8]">{feature.title}</h4>
+                <p className="text-sm font-semibold text-[#78675B] dark:text-[#C6B4A4]">{feature.desc}</p>
               </div>
             </div>
           );

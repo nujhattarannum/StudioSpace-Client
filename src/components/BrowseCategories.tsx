@@ -21,7 +21,7 @@ export default function BrowseCategories() {
         </h2>
       </div>
 
-      <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
+      <div className="grid grid-cols-2 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5">
         {categoryCards.map((cat) => {
           const IconComponent = cat.icon;
           return (
@@ -33,8 +33,8 @@ export default function BrowseCategories() {
               <div className="mb-3 flex h-14 w-14 items-center justify-center rounded-2xl bg-[#F3E7D8] text-[#4A291B] transition group-hover:bg-[#4A291B] group-hover:text-white dark:bg-[#4A362A] dark:text-[#F3E7D8] dark:group-hover:bg-[#F3E7D8] dark:group-hover:text-[#2C221E]">
                 <IconComponent size={26} />
               </div>
-              <h3 className="brand-font font-bold text-[#4A291B] dark:text-[#F3E7D8]">{cat.name}</h3>
-              <p className="mt-1 text-xs text-[#78675B] dark:text-[#C6B4A4]">{cat.subtitle}</p>
+              <h3 className="brand-font text-lg font-extrabold text-[#4A291B] dark:text-[#F3E7D8]">{cat.name}</h3>
+              <p className="mt-1 text-sm text-[#78675B] dark:text-[#C6B4A4]">{cat.subtitle}</p>
             </Link>
           );
         })}

@@ -50,6 +50,7 @@ export default function AddStudioPage() {
 
   const [selectedAmenities, setSelectedAmenities] = useState<string[]>([]);
   const [imageUrl, setImageUrl] = useState("");
+  const [extraImages, setExtraImages] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Read-only user details as required by the assignment
@@ -69,6 +70,13 @@ export default function AddStudioPage() {
 
     const formData = new FormData(e.currentTarget);
 
+    const parsedExtraImages = extraImages
+      .split(",")
+      .map((url) => url.trim())
+      .filter((url) => url !== "");
+
+    const mainImg = String(formData.get("imageUrl") ?? "").trim();
+
     const studio = {
       title: String(formData.get("title") ?? "").trim(),
       category: String(formData.get("category") ?? ""),
@@ -76,7 +84,8 @@ export default function AddStudioPage() {
       securityDeposit: Number(formData.get("securityDeposit")),
       capacity: Number(formData.get("capacity")),
       location: String(formData.get("location") ?? "").trim(),
-      imageUrl: String(formData.get("imageUrl") ?? "").trim(),
+      imageUrl: mainImg,
+      images: [mainImg, ...parsedExtraImages].filter(Boolean),
       amenities: selectedAmenities,
       description: String(formData.get("description") ?? "").trim(),
       ownerName: user?.name,
@@ -344,37 +353,79 @@ export default function AddStudioPage() {
                     Studio Photos
                   </h2>
                   <p className="mt-1 text-sm text-[#78675B] dark:text-[#C6B4A4]">
-                    Add an image URL to showcase your space.
+                    Add image URLs to showcase your space.
                   </p>
                 </div>
               </div>
 
-              <div className="space-y-2">
-                <label htmlFor="imageUrl" className="text-sm font-bold text-[#4A291B] dark:text-[#F3E7D8]">
-                  Main image URL *
-                </label>
-                <Input
-                  id="imageUrl"
-                  name="imageUrl"
-                  type="url"
-                  placeholder="https://example.com/studio.jpg"
-                  value={imageUrl}
-                  onChange={(e) => setImageUrl(e.target.value)}
-                  required
-                  className="h-12 rounded-xl border-[#E5D3C0] bg-[#FBF6EE] focus-visible:ring-[#4A291B] dark:border-[#514034] dark:bg-[#211A16] dark:text-[#F3E7D8] dark:placeholder:text-[#8A796B] dark:focus-visible:ring-[#C6B4A4]"
-                />
-              </div>
-
-              {imageUrl && (
-                <div className="mt-4 overflow-hidden rounded-2xl border border-[#E5D3C0] bg-[#F3E7D8] dark:border-[#514034] dark:bg-[#4A362A]">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src={imageUrl}
-                    alt="Studio preview"
-                    className="h-64 w-full object-cover"
+              <div className="space-y-5">
+                <div className="space-y-2">
+                  <label htmlFor="imageUrl" className="text-sm font-bold text-[#4A291B] dark:text-[#F3E7D8]">
+                    Main image URL *
+                  </label>
+                  <Input
+                    id="imageUrl"
+                    name="imageUrl"
+                    type="url"
+                    placeholder="https://example.com/studio.jpg"
+                    value={imageUrl}
+                    onChange={(e) => setImageUrl(e.target.value)}
+                    required
+                    className="h-12 rounded-xl border-[#E5D3C0] bg-[#FBF6EE] focus-visible:ring-[#4A291B] dark:border-[#514034] dark:bg-[#211A16] dark:text-[#F3E7D8] dark:placeholder:text-[#8A796B] dark:focus-visible:ring-[#C6B4A4]"
                   />
                 </div>
-              )}
+
+                {imageUrl && (
+                  <div className="overflow-hidden rounded-2xl border border-[#E5D3C0] bg-[#F3E7D8] dark:border-[#514034] dark:bg-[#4A362A]">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={imageUrl}
+                      alt="Studio preview"
+                      className="h-64 w-full object-cover"
+                    />
+                  </div>
+                )}
+
+                {/* Extra Images Field */}
+                <div className="space-y-2">
+                  <label htmlFor="extraImages" className="text-sm font-bold text-[#4A291B] dark:text-[#F3E7D8]">
+                    Extra studio photos (Optional)
+                  </label>
+                  <Textarea
+                    id="extraImages"
+                    placeholder="https://example.com/photo-2.jpg, https://example.com/photo-3.jpg"
+                    value={extraImages}
+                    onChange={(e) => setExtraImages(e.target.value)}
+                    rows={3}
+                    className="resize-y rounded-xl border-[#E5D3C0] bg-[#FBF6EE] leading-6 focus-visible:ring-[#4A291B] dark:border-[#514034] dark:bg-[#211A16] dark:text-[#F3E7D8] dark:placeholder:text-[#8A796B] dark:focus-visible:ring-[#C6B4A4]"
+                  />
+                  <p className="text-xs text-[#8A796B] dark:text-[#C6B4A4]">
+                    Separate multiple image URLs with a comma.
+                  </p>
+
+                  {extraImages.trim() && (
+                    <div className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-3">
+                      {extraImages
+                        .split(",")
+                        .map((url) => url.trim())
+                        .filter(Boolean)
+                        .map((url, idx) => (
+                          <div
+                            key={idx}
+                            className="overflow-hidden rounded-xl border border-[#E5D3C0] dark:border-[#514034]"
+                          >
+                            {/* eslint-disable-next-line @next/next/no-img-element */}
+                            <img
+                              src={url}
+                              alt={`Extra studio preview ${idx + 1}`}
+                              className="h-28 w-full object-cover"
+                            />
+                          </div>
+                        ))}
+                    </div>
+                  )}
+                </div>
+              </div>
             </div>
 
             {/* Amenities */}

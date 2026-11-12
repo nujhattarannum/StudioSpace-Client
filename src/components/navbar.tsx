@@ -99,7 +99,11 @@ useEffect(() => {
       handleNavClick(e, link.href);
     }
   }}
-  className={`...`}
+ className={`relative py-1 text-base font-bold tracking-wide transition-colors ${
+    active
+      ? "text-[#4A291B] dark:text-[#F3E7D8] after:absolute after:bottom-0 after:left-0 after:h-[2.5px] after:w-full after:rounded-full after:bg-[#4A291B] dark:after:bg-[#F3E7D8]"
+      : "text-[#78675B] hover:text-[#4A291B] dark:text-[#C6B4A4] dark:hover:text-[#F3E7D8]"
+  }`}
 >
   {link.name}
 </Link>

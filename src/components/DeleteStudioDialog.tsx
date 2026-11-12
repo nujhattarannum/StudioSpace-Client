@@ -65,7 +65,7 @@ const DeleteStudioDialog = ({ selectedStudio }: IStudioProps) => {
       variant="outline"
       disabled={isDeleting}
       onClick={handleDeleteStudio}
-      className="rounded-xl border-[#E5D3C0] text-xs font-bold text-[#4A291B] hover:bg-[#F3E7D8] dark:border-[#665247] dark:bg-[#30251F] dark:text-[#F3E7D8] dark:hover:bg-[#4A362A]"
+      className="rounded-xl border-[#E5D3C0] text-sm font-bold text-[#4A291B] hover:bg-[#F3E7D8] dark:border-[#665247] dark:bg-[#30251F] dark:text-[#F3E7D8] dark:hover:bg-[#4A362A]"
     >
       {isDeleting ? (
         <>

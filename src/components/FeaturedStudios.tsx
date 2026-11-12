@@ -40,13 +40,13 @@ export default function FeaturedStudios() {
           <h2 className="brand-font text-3xl font-bold text-[#4A291B] dark:text-[#F3E7D8]">
             Featured Studios
           </h2>
-          <p className="mt-1 text-sm text-[#78675B] dark:text-[#C6B4A4]">
+          <p className="mt-1 text-md text-[#78675B] dark:text-[#C6B4A4]">
             Top-rated and newest workspace productions available right now.
           </p>
         </div>
         <Link
           href="/studios"
-          className="group inline-flex items-center gap-1 text-sm font-bold text-[#4A291B] transition hover:underline dark:text-[#F3E7D8]"
+          className="group inline-flex items-center gap-1 text-md font-bold text-[#4A291B] transition hover:underline dark:text-[#F3E7D8]"
         >
           View All Studios <ArrowRight size={16} className="transition-transform group-hover:translate-x-1" />
         </Link>
