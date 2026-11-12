@@ -27,14 +27,6 @@ const navLinks = [
 export default  function Navbar() {
   const pathname = usePathname();
   const router = useRouter();
-useEffect(() => {
-  const load = async () => {
-    const { data } = await authClient.token();
-    console.log(data)
-    console.log('nujhat')
-  };
-  load();
-}, []);
   const [menuOpen, setMenuOpen] = useState(false);
   const { theme, setTheme } = useTheme();
   const { data: session, isPending } = authClient.useSession();
