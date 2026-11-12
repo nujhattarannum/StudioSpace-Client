@@ -51,7 +51,7 @@ useEffect(() => {
      const token = await  getTokenFromClient()
     try {
       // Direct request to single studio endpoint with user context
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/studios/${id}`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/studios/${id}/get-update`, {
         headers: {
           "x-user-email": session.user.email,
          

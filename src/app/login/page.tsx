@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { redirect } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import { Camera, Lock, Mail, Loader2 } from "lucide-react";
 
@@ -12,14 +12,12 @@ import { authClient } from "@/lib/auth-client";
 
 export default function LoginPage() {
    const [password, setPassword] = useState("");
-    const [passwordError, setPasswordError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isSocialLoading, setIsSocialLoading] = useState<string | null>(null);
+const router = useRouter();
 
   const handleLogin = async (e: React.SubmitEvent<HTMLElement>) => {
     e.preventDefault();
-
-
     const formdata = new FormData(e.target)
     const user =Object.fromEntries(formdata.entries()) as 
     {
@@ -33,7 +31,7 @@ export default function LoginPage() {
       }, {
         onSuccess: () => {
           toast.success("Logged in successfully!");
-          redirect("/"); // Navigate user to Home page after successful login
+           router.push("/"); // Navigate user to Home page after successful login
         },
         onError: (ctx) => {
           toast.error(ctx.error.message || "Invalid email or password.");
@@ -56,7 +54,7 @@ const handleSocialLogin = async (provider: "google") => {
   try {
     await authClient.signIn.social({
       provider: provider,
-      callbackURL: process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000",
+      callbackURL: process.env.NEXT_PUBLIC_BASE_URL ,
     });
   } catch (err) {
     console.error(err);
